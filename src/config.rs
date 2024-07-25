@@ -4,12 +4,14 @@ use std::path::PathBuf;
 use std::path::Path;
 use homedir::my_home;
 use std::string::String;
-use core::str::Split;
+
 
 #[derive(Default)]
 pub struct ConfigFile{
     pub database_file: String,
-    pub default_notebook: String
+    pub default_notebook: String,
+    pub recent_notes_count: u32,
+    pub backup_location: String
 }
 
 impl ConfigFile{
@@ -17,36 +19,33 @@ impl ConfigFile{
         let file_path = ConfigFile::get_config_file();
         let contents = ConfigFile::read_config_file(file_path);
         let lines = contents.split("\n");
-        let mut conf_line_parts: Split<&str>;
-        let mut counter = 0;
         for line in lines{
-            println!("{}", line);
-            if line.starts_with("database ="){
-                println!("Found database line");
-                conf_line_parts = line.split("=");
-                if conf_line_parts.clone().count() != 2{  //Note clone() to make acopy as count would consume conf_line_parts iterator
-                    panic!("Bad config file");
-                }
-                self.database_file = conf_line_parts.nth(1).unwrap().to_string(); // note .unwrap() returns value of 'Some' from Option type (Some and None).
-                counter += 1;
-                if counter > 1 {break;}
+            if line.starts_with("database ="){                
+                self.database_file = ConfigFile::get_value_from_line(line).to_string();
             }
-            else if line.starts_with("default notebook = "){
-                println!("Found default notebook");
-                conf_line_parts = line.split("=");
-                if conf_line_parts.clone().count() != 2{  //Note clone() to make acopy as count would consume conf_line_parts iterator
-                    panic!("Bad config file");
-                }
-                self.default_notebook = conf_line_parts.nth(1).unwrap().to_string();
-                counter += 1;
-                if counter > 1{break;}
+            if line.starts_with("recent notes count ="){                
+                self.recent_notes_count = ConfigFile::get_value_from_line(line).to_string().trim().parse().unwrap();
             }
-
-            
+            if line.starts_with("default notebook ="){                
+                self.default_notebook = ConfigFile::get_value_from_line(line).to_string();
+            }
+            if line.starts_with("backup location ="){                
+                self.backup_location = ConfigFile::get_value_from_line(line).to_string();
+            }            
         }
         //Self{database_file: db_file_path, default_notebook: def_notebook}
     } 
 
+    fn get_value_from_line(line: &str) -> &str{
+        let mut conf_line_parts = line.split("=");
+        if conf_line_parts.clone().count() != 2{  //Note clone() to make acopy as count would consume conf_line_parts iterator
+            panic!("Bad config file");
+        }
+
+        let value: &str = conf_line_parts.nth(1).unwrap(); // note .unwrap() returns value of 'Some' from Option type (Some and None).
+        value
+    }
+    
     fn read_config_file(config_file: PathBuf) -> String{
         println!("Reading config file...");
         // As reading file line by line is not working, lets read it into a string

@@ -8,13 +8,18 @@ fn main() {
     let command = std::env::args().nth(1); // stop panic for debugging only !!!!
     let options = std::env::args().nth(2);
     let mut conf = config::ConfigFile::default();
+    
     conf.get_config(); // this will read the scribe config and populate the struct with the values
 
     println!("command: {:?}  options: {:?} ",command,options);    
 
-    println!("database file: {}", conf.database_file);
-    println!("default notebook: {}", conf.default_notebook);
+    println!("---------- Scribe cli 1.0 -------------");
+    //println!("database file: {}", conf.database_file);
+    //println!("default notebook: {}", conf.default_notebook);
 
+
+    
+    
     //testing ***********************
     /*
     let mut params = vec![
