@@ -1,19 +1,38 @@
-
+use rusqlite::{Connection};
 
 mod config;
+mod database;
 
 
 fn main() {
-    //let command = std::env::args().nth(1).expect("no command given");
-    let command = std::env::args().nth(1); // stop panic for debugging only !!!!
+    let command = std::env::args().nth(1).expect("no command given");
     let options = std::env::args().nth(2);
+    let param = std::env::args().nth(3);
     let mut conf = config::ConfigFile::default();
+    
+    println!("---------- Scribe cli 1.0 -------------");
+    println!("Command: {}", command);
+    match options{
+        Some(s) => println!("options: {}", s),
+        None => println!("options <none>"),
+    };
+
+    match param{
+        Some(s) => println!("params: {}", s),
+        None => println!("params <none>"),
+    };
     
     conf.get_config(); // this will read the scribe config and populate the struct with the values
 
-    println!("command: {:?}  options: {:?} ",command,options);    
+    let conn = database::open(conf.database_file.as_str());
 
-    println!("---------- Scribe cli 1.0 -------------");
+    database::get_recent_notes(&conn, 4);
+
+
+
+    //println!("command: {:?}  options: {:?} ",command,options);    
+    
+    
     //println!("database file: {}", conf.database_file);
     //println!("default notebook: {}", conf.default_notebook);
 
