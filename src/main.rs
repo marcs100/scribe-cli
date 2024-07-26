@@ -1,4 +1,5 @@
 use rusqlite::{Connection};
+use colored::Colorize;
 
 mod config;
 mod database;
@@ -32,12 +33,13 @@ fn main() {
     match notes{
         Some(note_data) => {
             for note in note_data.iter(){
-                println!("----------");
-                println!("| From Notebook: {}  Created: {}  Modified: {}",note.notebook, &note.created[..16], &note.modified[..16]);
-                println!("----------");
-                println!("{}", note.content);
-                println!("");
-            }
+                println!("{}","<----------".cyan());
+                println!("| From Notebook: {}  Created: {}  Modified: {}",note.notebook.green().bold(), &note.created[..16].green().bold(), &note.modified[..16].green().bold());
+                println!("{}","-----------".cyan());
+                println!("{}", note.content.trim());
+                println!("{}","---------->".cyan());
+                println!("\n\n");
+            };
         },
         None => {println!("No recent notes returned");}
     }
