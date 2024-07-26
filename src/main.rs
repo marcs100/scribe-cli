@@ -5,13 +5,14 @@ mod database;
 
 
 fn main() {
-    let command = std::env::args().nth(1).expect("no command given");
+    //let command = std::env::args().nth(1).expect("no command given");
+    let command = std::env::args().nth(1);
     let options = std::env::args().nth(2);
     let param = std::env::args().nth(3);
     let mut conf = config::ConfigFile::default();
     
     println!("---------- Scribe cli 1.0 -------------");
-    println!("Command: {}", command);
+    println!("Command: {:?}", command);
     match options{
         Some(s) => println!("options: {}", s),
         None => println!("options <none>"),
@@ -20,13 +21,26 @@ fn main() {
     match param{
         Some(s) => println!("params: {}", s),
         None => println!("params <none>"),
-    };
+    }
     
     conf.get_config(); // this will read the scribe config and populate the struct with the values
 
     let conn = database::open(conf.database_file.as_str());
 
-    database::get_recent_notes(&conn, 4);
+    let notes = database::get_recent_notes(&conn, 4);
+
+    match notes{
+        Some(note_data) => {
+            for note in note_data.iter(){
+                println!("----------");
+                println!("| From Notebook: {}  Created: {}  Modified: {}",note.notebook, &note.created[..16], &note.modified[..16]);
+                println!("----------");
+                println!("{}", note.content);
+                println!("");
+            }
+        },
+        None => {println!("No recent notes returned");}
+    }
 
 
 
