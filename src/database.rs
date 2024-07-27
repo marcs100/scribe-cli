@@ -33,10 +33,10 @@ pub fn open(database_file: &str) -> Connection{
 
 pub fn get_recent_notes(conn: &Connection, num_notes: u32) -> Option<Vec<NoteData>>{
 
-      let mut stmt: Statement = conn.prepare("SELECT * from marcnotes order by modified desc LIMIT 4").unwrap();
+      let mut stmt: Statement = conn.prepare("SELECT * from marcnotes order by modified desc LIMIT :limit;").unwrap();
       let contents: String = String::new();   
-      
-      let row_iter = stmt.query_map([], |row| {
+      //let row_iter = stmt.query_map([], |row| {
+      let row_iter = stmt.query_map(&[(":limit", num_notes.to_string().as_str())], |row| {
             Ok(NoteData{
                   id: row.get(0)?,
                   notebook: row.get(1)?,
