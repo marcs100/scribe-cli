@@ -1,8 +1,4 @@
-//extern crate rusqlite;
 
-use std::str::FromStr;
-
-//use std::result::Result::*;
 use rusqlite::{params, Connection, Result, Statement, Error};
 //use rusqlite::NO_PARAMS;
 
