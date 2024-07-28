@@ -1,7 +1,6 @@
 use rusqlite::{Connection};
 use colored::Colorize;
 use std::string::String;
-use chrono::{DateTime, Local};
 
 mod config;
 mod database;
