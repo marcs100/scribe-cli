@@ -54,15 +54,9 @@ impl ConfigFile{
     }
 
     fn get_config_file() -> PathBuf{
-        let home_dir_result: Result<Option<std::path::PathBuf>, homedir::GetHomeError> = my_home();
-        //This is convoluted there must be a better way!!
-        let mut home_dir = match home_dir_result {
-            Ok(option) => match option{
-                Some(pb) => pb,
-                None => panic!("Could not find scribe configutaion file!")//PathBuf::new()
-            },
-            Err(..) => panic!("Could not get scribe configuation file!")//PathBuf::new()
-        };
+        //let home_dir: Result<Option<std::path::PathBuf>, homedir::GetHomeError> = my_home().expect("Could not get config file");
+        let mut home_dir: PathBuf = my_home().unwrap().expect("Could not get config file");
+
         home_dir.push(Path::new(".config/scribe/scribe.config"));
         home_dir
     }

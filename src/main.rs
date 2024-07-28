@@ -5,37 +5,37 @@ use std::string::String;
 mod config;
 mod database;
 
+static VERSION: &str = "0.001 dev";
+
 fn main() {
     let command = std::env::args().nth(1).expect("no command given");
     //let command = std::env::args().nth(1);
-    let option = std::env::args().nth(2);
-    let param = std::env::args().nth(3);
+    let arg1 = std::env::args().nth(2);
+    let arg2 = std::env::args().nth(3);
     let mut conf = config::ConfigFile::default();
     
-    //println!("---------- Scribe cli 1.0 -------------");
+    println!("---------- Scribe cli {} -------------", VERSION);
     //println!("Command: {}", command);
 
     let mut user_option: String = String::new();
     let mut user_param: String = String::new();
 
-    match option{
-        Some(s) => user_option.push_str(&s.trim()),
-        None => println!("options <none>"),
-    };
+    if arg1.clone().is_some_and(|val| val.starts_with("--") ){
+        user_option.push_str(&arg1.unwrap());
+    }
+    else{
+        //arg1 must a parameter - check we only have one parameter given
+        if arg2.is_some(){
+            panic!("Too omany parameters or bad option");
+        }
+    }
 
-    match param{
-        Some(s) => user_param.push_str(&s.trim()),
-        None => println!("params <none>"),
+     if arg2.is_some(){
+        user_param.push_str(&arg2.unwrap());
     }
 
     conf.get_config(); // this will read the scribe config and populate the struct with the values
 
-      //debug only ***************
-      //let command: String = String::from("recent");
-      //user_option.push_str("count");
-      //user_param.push_str("1");
-
-    
     match command.as_str(){
         "recent" => {recent_notes_cmd(&user_option, &user_param, conf);}, 
         _ => {println!("No command!");}
@@ -52,7 +52,7 @@ fn recent_notes_cmd(option: &str, param: &str, conf: config::ConfigFile){
     let got_param = false;
 
     match option{
-        "count" => {
+        "--count" => {
             if(param.len()>0){
                 num_notes = param.parse().expect("bad parameter {}");
             }

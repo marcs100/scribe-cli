@@ -2,7 +2,7 @@
 use rusqlite::{params, Connection, Result, Statement, Error};
 //use rusqlite::NO_PARAMS;
 
-#[derive(Debug)]
+//#[derive(Debug)]
 pub struct NoteData {
       pub id: i32,
       pub notebook: String,
@@ -48,7 +48,7 @@ pub fn get_recent_notes(conn: &Connection, num_notes: u32) -> Option<Vec<NoteDat
         let mut notes: Vec<NoteData> =  vec![];
         
         for row_data in row_iter {
-            let note_data = row_data.expect("get_recent_notes: error gettign row data");
+            let note_data = row_data.expect("get_recent_notes: error getting row data");
             //println!("{}",print_out);
             //println!("\n");
             notes.push(note_data);
