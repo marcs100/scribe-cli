@@ -14,6 +14,12 @@ pub struct NoteData {
       pub back_colour: String            
 }
 
+impl NoteData{
+      pub fn set_date_time(){
+            //set date/time for created a and modifed to current date/time
+      }
+}
+
 pub fn open(database_file: &str) -> Connection{
       
       let conn : Connection;
@@ -57,5 +63,11 @@ pub fn get_recent_notes(conn: &Connection, num_notes: u32) -> Option<Vec<NoteDat
         if notes.len() == 0 {return None;}
 
         Some(notes)
-    
+}
+
+
+pub fn write_note(conn: &Connection, note_details: NoteData)-> Result<bool, &str>{
+
+      let result: Result<bool,&str> = {Ok(true)};
+      result
 }

@@ -1,6 +1,7 @@
 use rusqlite::{Connection};
 use colored::Colorize;
 use std::string::String;
+use chrono::{DateTime, Local};
 
 mod config;
 mod database;
@@ -26,7 +27,7 @@ fn main() {
     else{
         //arg1 must a parameter - check we only have one parameter given
         if arg2.is_some(){
-            panic!("Too omany parameters or bad option");
+            panic!("Too many parameters or bad option!");
         }
     }
 
@@ -38,10 +39,15 @@ fn main() {
 
     match command.as_str(){
         "recent" => {recent_notes_cmd(&user_option, &user_param, conf);}, 
-        _ => {println!("No command!");}
+        "quick" => {quick_note_cmd(&user_option, &user_param, conf);},
+         _ => {println!("No command!");},
     }
-    
- 
+}
+
+//debug only - test to read date/tome from system and format it dor scride db.
+fn get_date_time(){
+    let dt = Local::now();
+
 }
 
 fn recent_notes_cmd(option: &str, param: &str, conf: config::ConfigFile){
@@ -79,4 +85,22 @@ fn recent_notes_cmd(option: &str, param: &str, conf: config::ConfigFile){
         },
         None => {println!("No recent notes returned");}
     }
+
+    conn.close();
+}
+
+//writes one line of user input to the defualt note book
+fn quick_note_cmd(option: &str, param: &str, conf: config::ConfigFile){
+    let mut notebook = conf.default_notebook;
+
+    if option.len() > 0{
+        panic!("no options currently supported for this command!");
+    }
+
+    /*let note_details: database::NoteData = {
+        notebook: notebook,
+
+    }*/
+
+   //write_note(&conn, )
 }
