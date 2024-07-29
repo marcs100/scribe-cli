@@ -11,7 +11,8 @@ pub struct ConfigFile{
     pub database_file: String,
     pub default_notebook: String,
     pub recent_notes_count: u32,
-    pub backup_location: String
+    pub backup_location: String,
+    pub default_note_background: String,
 }
 
 impl ConfigFile{
@@ -31,8 +32,12 @@ impl ConfigFile{
             }
             if line.starts_with("backup location ="){                
                 self.backup_location = ConfigFile::get_value_from_line(line).to_string();
-            }            
+            }
+            if line.starts_with("default note bg ="){
+                self.default_note_background = ConfigFile::get_value_from_line(line).to_string();
+            }
         }
+
         //Self{database_file: db_file_path, default_notebook: def_notebook}
     } 
 
