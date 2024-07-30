@@ -6,6 +6,7 @@ use colored::Colorize;
 use std::string::String;
 use chrono::{DateTime, Local};
 use scribe_database::NoteData;
+use std::env;  //currently only being used for rust baccktrace
 
 
 static VERSION: &str = "0.001 dev";
@@ -16,6 +17,8 @@ fn main() {
     let arg1 = std::env::args().nth(2);
     let arg2 = std::env::args().nth(3);
     let mut conf = config::ConfigFile::default();
+
+    env::set_var("RUST_BACKTRACE", "1"); //this shoudld only be in the dubug version
     
     println!("---------- Scribe cli {} -------------", VERSION);
 
