@@ -60,22 +60,17 @@ pub fn get_recent_notes(conn: &Connection, num_notes: u32) -> Option<Vec<NoteDat
 }
 
 
-pub fn write_note(conn: &Connection, note_details: NoteData)-> Result<bool, &str>{
+pub fn write_note(conn: &Connection, note_details: NoteData)-> Result<usize>{
 
-      let result: Result<bool,&str> = {Ok(true)};
-      //conn.execute_batch("PRAGMA foreign_keys = ON;").expect("PRAGMA error");
-      //let mut statement = conn.prepare("insert into marcnotes values (NULL,?1,?2,?3,?4,?5,?6,?7)").unwrap();
-      let mut statement = conn.prepare("insert into marcnotes (notebook, tag, content, created, modified, pinned, BGColour) values (?,?,?,?,?,?,?)").unwrap();
-      conn.pragma_update(None,"foreign_keys", &"ON" ).unwrap();
-      //conn.execute_batch("PRAGMA foreign_keys = ON;").expect("PRAGMA error");
-      statement.execute(params![note_details.notebook,
-                           note_details.tag,
-                           note_details.content,
-                           note_details.created,
-                           note_details.modified,
-                           note_details.pinned,
-                           note_details.back_colour]).expect("scribe_database: error writng note  ");
-
+      let result = conn.execute(
+            "insert into marcnotes (notebook, tag, content, created, modified, pinned, BGColour) values (?,?,?,?,?,?,?)",
+            (note_details.notebook,
+                  note_details.tag, 
+                  note_details.content, 
+                  note_details.created, 
+                  note_details.modified, 
+                  note_details.pinned, 
+                  note_details.back_colour));  //.expect("write_note: error with sqlite query");
 
       result
 }

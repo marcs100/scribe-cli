@@ -47,7 +47,7 @@ impl ConfigFile{
             panic!("Bad config file");
         }
 
-        let value: &str = conf_line_parts.nth(1).unwrap(); // note .unwrap() returns value of 'Some' from Option type (Some and None).
+        let value: &str = conf_line_parts.nth(1).unwrap().trim(); // note .unwrap() returns value of 'Some' from Option type (Some and None).
         value
     }
     

@@ -104,7 +104,7 @@ fn recent_notes_cmd(option: &str, param: &str, conf: config::ConfigFile){
 fn quick_note_cmd(option: &str, param: &str, conf: config::ConfigFile){
     let notebook: String  = conf.default_notebook;
     let note_content = String::from(param);
-    let tag = String::new();
+    let tag = String::from("None");
     let bg = conf.default_note_background;
     let conn = scribe_database::open(conf.database_file.as_str());
 
@@ -121,7 +121,7 @@ fn quick_note_cmd(option: &str, param: &str, conf: config::ConfigFile){
 
     let dt = Local::now();
     let date_time_cr: String = dt.to_string();
-    let date_time_mod = date_time_cr.clone();
+    let date_time_formatted = date_time_cr[..19].to_string();
 
 
     let note_details: NoteData = NoteData{
@@ -129,8 +129,8 @@ fn quick_note_cmd(option: &str, param: &str, conf: config::ConfigFile){
         notebook: notebook,
         tag: tag,
         content: note_content,
-        created: date_time_cr,
-        modified: date_time_mod,
+        created: date_time_formatted.clone(),
+        modified: date_time_formatted.clone(),
         pinned: 0,
         back_colour: bg,
     };
