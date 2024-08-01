@@ -1,12 +1,10 @@
 mod config;
+mod commands;
 mod scribe_database;
 
-use rusqlite::{Connection};
-use colored::Colorize;
-use std::string::String;
-use chrono::{DateTime, Local};
-use scribe_database::NoteData;
-use std::env;  //currently only being used for rust baccktrace
+use crate::commands::{quick_note_cmd,recent_notes_cmd};
+
+//use std::env;  //currently only being used for rust baccktrace
 
 
 static VERSION: &str = "0.001 dev";
@@ -18,7 +16,7 @@ fn main() {
     let arg2 = std::env::args().nth(3);
     let mut conf = config::ConfigFile::default();
 
-    env::set_var("RUST_BACKTRACE", "1"); //this shoudld only be in the dubug version
+    //env::set_var("RUST_BACKTRACE", "1"); //this should only be in the dubug version
     
     println!("---------- Scribe cli {} -------------", VERSION);
 
@@ -57,85 +55,3 @@ fn main() {
 }
 
 
-fn recent_notes_cmd(option: &str, param: &str, conf: config::ConfigFile){
-
-    // ************* debug only *****************************
-    //let mut s1: String = String::new();
-    //s1.push_str(conf.database_file.as_str());
-    //s1.push_str("_test");
-    //let conn = database::open(s1.as_str()); // debug_only
-    // ********** end debug only ****************************
-    let conn = scribe_database::open(conf.database_file.as_str());
-    let mut num_notes = conf.recent_notes_count;
-
-    match option{
-        "--count" => {
-            if param.len()>0{
-                num_notes = param.parse().expect("bad parameter {}");
-            }
-            else{
-                println!("expecting parameter for count!");
-                return;
-            }
-        },
-        _ => {conf.recent_notes_count;}
-    }
-
-    let notes = scribe_database::get_recent_notes(&conn, num_notes);
-
-    match notes{
-        Some(note_data) => {
-            for note in note_data.iter(){
-                println!("{}","<----------".cyan());
-                println!("| From Notebook: {}  Created: {}  Modified: {}",note.notebook.green().bold(), &note.created[..16].green().bold(), &note.modified[..16].green().bold());
-                println!("{}","-----------".cyan());
-                println!("{}", note.content.trim());
-                println!("{}","---------->".cyan());
-                println!("\n\n");
-            };
-        },
-        None => {println!("No recent notes returned");}
-    }
-
-    conn.close().expect("error closing db connection");
-}
-
-//writes one line of user input to the defualt note book
-fn quick_note_cmd(option: &str, param: &str, conf: config::ConfigFile){
-    let notebook: String  = conf.default_notebook;
-    let note_content = String::from(param);
-    let tag = String::from("None");
-    let bg = conf.default_note_background;
-    let conn = scribe_database::open(conf.database_file.as_str());
-
-    println!("option = {}", option); //debug on;y **********
-    println!("param = {}", param); //debug on;y **********
-
-    if option.len() > 0{
-        panic!("no options currently supported for this command!");
-    }
-
-    if param.len() == 0 {
-        panic!("No note contents to write!");
-    }
-
-    let dt = Local::now();
-    let date_time_cr: String = dt.to_string();
-    let date_time_formatted = date_time_cr[..19].to_string();
-
-
-    let note_details: NoteData = NoteData{
-        id: 1,
-        notebook: notebook,
-        tag: tag,
-        content: note_content,
-        created: date_time_formatted.clone(),
-        modified: date_time_formatted.clone(),
-        pinned: 0,
-        back_colour: bg,
-    };
-
-    scribe_database::write_note(&conn,note_details).expect("quick_note_cmd: error writing note");
-
-    conn.close().expect("error closing db connection");
-}
