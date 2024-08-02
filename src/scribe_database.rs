@@ -1,7 +1,7 @@
 use rusqlite::{Connection, Result, Statement};
 //use rusqlite::NO_PARAMS;
 
-//#[derive(Debug)]
+#[derive(Debug)]
 pub struct NoteData {
       pub id: i32,
       pub notebook: String,
@@ -65,7 +65,7 @@ pub fn write_note(conn: &Connection, note_details: NoteData)-> Result<usize>{
             "insert into marcnotes (notebook, tag, content, created, modified, pinned, BGColour) values (?,?,?,?,?,?,?)",
                                 (note_details.notebook,
                                  note_details.tag,
-                                 note_details.content,
+                                 note_details.content.replace("\\n","\n"),
                                  note_details.created,
                                  note_details.modified,
                                  note_details.pinned,
