@@ -64,7 +64,7 @@ fn display_help(){
     println!("scribe-cli <command> <options>");
     println!("commands:");
     println!("    recent - Displays recent notes (number of notes to display is in scribe.config)");
-    println!("         option : [--count, -c] number of recent notes to display (overrides scribe.conf)");
+    println!("         option : [--count, -c] number of recent notes to display (overrides scribe.config)");
     println!("    quick <content> - Write a quick note (incase note in quotes)");
     println!("         option <none>");
 }
