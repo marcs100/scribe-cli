@@ -24,6 +24,12 @@ fn main() {
     let mut user_param: String = String::new();
     let mut got_param = false;
 
+    //check command is not help request
+    if command == "-h" || command == "--help"{
+        display_help();
+        return;
+    }
+
     match arg1{
         Some(s) => {
             if s.starts_with("--"){ //options should always start with -- else it wil be considered a parameter
@@ -54,4 +60,11 @@ fn main() {
     }
 }
 
-
+fn display_help(){
+    println!("scribe-cli <command> <options>");
+    println!("commands:");
+    println!("    recent - Displays recent notes (number of notes to display is in scribe.config)");
+    println!("         option : [--count, -c] number of recent notes to display (overrides scribe.conf)");
+    println!("    quick <content> - Write a quick note (incase note in quotes)");
+    println!("         option <none>");
+}

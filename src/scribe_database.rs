@@ -27,6 +27,7 @@ pub fn opendb(database_file: &str) -> Connection{
       conn
 }
 
+
 pub fn get_recent_notes(conn: &Connection, num_notes: u32) -> Option<Vec<NoteData>>{
 
       let mut stmt: Statement = conn.prepare("SELECT * from marcnotes order by modified desc LIMIT :limit;").unwrap();

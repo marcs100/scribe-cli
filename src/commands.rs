@@ -1,9 +1,5 @@
-use crate::scribe_database::write_note;
-use crate::scribe_database::get_recent_notes;
-use crate::scribe_database::opendb;
-use crate::scribe_database::NoteData;
+use crate::scribe_database::{write_note, get_recent_notes,opendb, NoteData};
 use crate::config::ConfigFile;
-
 use colored::Colorize;
 use std::string::String;
 use chrono::Local;
