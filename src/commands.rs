@@ -53,10 +53,10 @@ pub fn display_notes(notes: Option<Vec<NoteData>>){
 }
 
 //writes one line of user input to the defualt note book
-pub fn quick_note_cmd(option: &str, param: &str, conf: ConfigFile){
+pub fn quick_note_cmd(option: &str, value: &str, conf: ConfigFile){
     let notebook: String  = conf.default_notebook;
-    let note_content = String::from(param);
-    let tag = String::from("None");
+    let note_content = String::from(value);
+    let tag = String::from("None"); // this field is not used any more!
     let bg = conf.default_note_background;
     let conn = opendb(conf.database_file.as_str());
 
@@ -67,7 +67,7 @@ pub fn quick_note_cmd(option: &str, param: &str, conf: ConfigFile){
         panic!("no options currently supported for this command!");
     }
 
-    if param.len() == 0 {
+    if value.len() == 0 {
         panic!("No note contents to write!");
     }
 
