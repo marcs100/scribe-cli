@@ -17,7 +17,7 @@ pub fn recent_notes_cmd(option: &str, param: &str, conf: ConfigFile){
     let mut num_notes = conf.recent_notes_count;
 
     match option{
-        "--count" => {
+        "--count" | "-c" => {
             if param.len()>0{
                 num_notes = param.parse().expect("bad parameter {}");
             }

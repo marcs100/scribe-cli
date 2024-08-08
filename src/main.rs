@@ -15,14 +15,16 @@ fn main() {
     let arg1 = std::env::args().nth(2);
     let arg2 = std::env::args().nth(3);
     let mut conf = config::ConfigFile::default();
+    let valid_short_options = ['c','C']; //room to add more in future!!!!!!!!
+    let valid_long_options = ["--count",]; //room for more in future!!!
 
     //env::set_var("RUST_BACKTRACE", "1"); //this should only be in the dubug version
     
     println!("---------- Scribe cli {} -------------", VERSION);
 
     let mut user_option: String = String::new();
-    let mut user_param: String = String::new();
-    let mut got_param = false;
+    let mut user_value: String = String::new();
+    let mut got_value = false;
 
     //check command is not help request
     if command == "-h" || command == "--help"{
@@ -30,32 +32,40 @@ fn main() {
         return;
     }
 
-    match arg1{
+    match arg1{  //if arg1 is not an 'option' then it will be considered a value
         Some(s) => {
-            if s.starts_with("--"){ //options should always start with -- else it wil be considered a parameter
+            if s.len() == 2{
+                if s.starts_with("-") && valid_short_options.contains(&s.chars().nth(1).unwrap()){ //need to get 2nd char from String!!!!!!!!!!!!!!!
+                    user_option.push_str(&s);
+                }
+                else{
+                    panic!("invalid option given");
+                }
+            }
+            else if valid_long_options.contains(&s.as_str()){
                 user_option.push_str(&s);
             }
             else{
                 if arg2.is_some(){
-                    panic!("Too many parameters or bad option!"); //can't have 2 parameters and no option given'
+                    panic!("Too many valueeters or bad option!"); //can't have 2 values and no option given'
                 }
-                user_param.push_str(&s); //arg1 is a parameter not an option
-                got_param = true;
+                user_value.push_str(&s); //arg1 is a valueeter not an option
+                got_value = true;
             }
         },
         None => ()
     }
 
-    if arg2.is_some() && !got_param{
-        user_param.push_str(&arg2.unwrap());
+    if arg2.is_some() && !got_value{
+        user_value.push_str(&arg2.unwrap());
     }
 
 
     conf.get_config(); // this will read the scribe config and populate the struct with the values
 
     match command.as_str(){
-        "recent" => {recent_notes_cmd(&user_option, &user_param, conf);}, 
-        "quick" => {quick_note_cmd(&user_option, &user_param, conf);},
+        "recent" => {recent_notes_cmd(&user_option, &user_value, conf);},
+        "quick" => {quick_note_cmd(&user_option, &user_value, conf);},
          _ => {println!("No command!");},
     }
 }

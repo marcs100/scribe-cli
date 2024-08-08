@@ -24,16 +24,16 @@ impl ConfigFile{
             if line.starts_with("database ="){                
                 self.database_file = ConfigFile::get_value_from_line(line).to_string();
             }
-            if line.starts_with("recent notes count ="){                
+            else if line.starts_with("recent notes count ="){
                 self.recent_notes_count = ConfigFile::get_value_from_line(line).to_string().trim().parse().unwrap();
             }
-            if line.starts_with("default notebook ="){                
+            else if line.starts_with("default notebook ="){
                 self.default_notebook = ConfigFile::get_value_from_line(line).to_string();
             }
-            if line.starts_with("backup location ="){                
+            else if line.starts_with("backup location ="){
                 self.backup_location = ConfigFile::get_value_from_line(line).to_string();
             }
-            if line.starts_with("default note bg ="){
+            else if line.starts_with("default note bg ="){
                 self.default_note_background = ConfigFile::get_value_from_line(line).to_string();
             }
         }
