@@ -52,7 +52,7 @@ impl ConfigFile{
     }
     
     fn read_config_file(config_file: PathBuf) -> String{
-        println!("Reading config file...");
+        //println!("Reading config file...");
         // As reading file line by line is not working, lets read it into a string
         let contents = fs::read_to_string(config_file).expect("Could not read config file (empty)");
         contents

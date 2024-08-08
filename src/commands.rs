@@ -5,7 +5,7 @@ use std::string::String;
 use chrono::Local;
 
 
-pub fn recent_notes_cmd(option: &str, param: &str, conf: ConfigFile){
+pub fn recent_notes_cmd(option: &str, value: &str, conf: ConfigFile){
 
     // ************* debug only *****************************
     //let mut s1: String = String::new();
@@ -18,11 +18,11 @@ pub fn recent_notes_cmd(option: &str, param: &str, conf: ConfigFile){
 
     match option{
         "--count" | "-c" => {
-            if param.len()>0{
-                num_notes = param.parse().expect("bad parameter {}");
+            if value.len()>0{
+                num_notes = value.parse().expect("invalid option given");
             }
             else{
-                println!("expecting parameter for count!");
+                println!("expecting a value for count!");
                 return;
             }
         },
@@ -31,7 +31,13 @@ pub fn recent_notes_cmd(option: &str, param: &str, conf: ConfigFile){
 
     let notes = get_recent_notes(&conn, num_notes);
 
-    match notes{
+    display_notes(notes);
+
+    conn.close().expect("error closing db connection");
+}
+
+pub fn display_notes(notes: Option<Vec<NoteData>>){
+     match notes{
         Some(note_data) => {
             for note in note_data.iter(){
                 println!("{}","<----------".cyan());
@@ -44,8 +50,6 @@ pub fn recent_notes_cmd(option: &str, param: &str, conf: ConfigFile){
         },
         None => {println!("No recent notes returned");}
     }
-
-    conn.close().expect("error closing db connection");
 }
 
 //writes one line of user input to the defualt note book
@@ -84,6 +88,10 @@ pub fn quick_note_cmd(option: &str, param: &str, conf: ConfigFile){
     };
 
     write_note(&conn,note_details).expect("quick_note_cmd: error writing note");
+
+    //Now lets show the note we have just created
+    let notes = get_recent_notes(&conn,1);
+    display_notes(notes);
 
     conn.close().expect("error closing db connection");
 }
