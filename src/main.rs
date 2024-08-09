@@ -2,12 +2,12 @@ mod config;
 mod commands;
 mod scribe_database;
 
-use crate::commands::{quick_note_cmd,recent_notes_cmd};
+use crate::commands::{quick_note_cmd,recent_notes_cmd,pinned_notes_cmd};
 
 //use std::env;  //currently only being used for rust baccktrace
 
 
-static VERSION: &str = "0.001 dev";
+static VERSION: &str = "0.002 dev";
 
 fn main() {
     let command = std::env::args().nth(1).expect("no command given");
@@ -15,8 +15,8 @@ fn main() {
     let arg1 = std::env::args().nth(2);
     let arg2 = std::env::args().nth(3);
     let mut conf = config::ConfigFile::default();
-    let valid_short_options = ['c','C']; //room to add more in future!!!!!!!!
-    let valid_long_options = ["--count",]; //room for more in future!!!
+    let valid_short_options = ['c','p']; //room to add more in future!!!!!!!!
+    let valid_long_options = ["--count","--pin"]; //room for more in future!!!
 
     //env::set_var("RUST_BACKTRACE", "1"); //this should only be in the dubug version
     
@@ -66,6 +66,7 @@ fn main() {
     match command.as_str(){
         "recent" => {recent_notes_cmd(&user_option, &user_value, conf);},
         "quick" => {quick_note_cmd(&user_option, &user_value, conf);},
+        "pinned" => {pinned_notes_cmd(&user_option, &user_value, conf);},
          _ => {println!("No command!");},
     }
 }
@@ -74,7 +75,9 @@ fn display_help(){
     println!("scribe-cli <command> <options>");
     println!("commands:");
     println!("    recent - Displays recent notes (number of notes to display is in scribe.config)");
-    println!("         option : [--count, -c] number of recent notes to display (overrides scribe.config)");
+    println!("         option : [--count -c] number of recent notes to display (overrides scribe.config)");
     println!("    quick <content> - Write a quick note (incase note in quotes)");
-    println!("         option <none>");
+    println!("         option : [--pin -p] pin the note");
+    println!("    pinned - Display all pinned notes");
+    println!("         option : <NNone>");
 }

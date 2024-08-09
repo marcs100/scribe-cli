@@ -1,4 +1,4 @@
-use crate::scribe_database::{write_note, get_recent_notes,opendb, NoteData};
+use crate::scribe_database::{write_note, get_recent_notes,opendb,get_pinned_notes,NoteData};
 use crate::config::ConfigFile;
 use colored::Colorize;
 use std::string::String;
@@ -36,12 +36,20 @@ pub fn recent_notes_cmd(option: &str, value: &str, conf: ConfigFile){
     conn.close().expect("error closing db connection");
 }
 
+// helper functions to display the notes vector to screen.
 pub fn display_notes(notes: Option<Vec<NoteData>>){
      match notes{
         Some(note_data) => {
             for note in note_data.iter(){
+                let mut pinned_status = String::new();
+                match note.pinned{
+                    0 => {pinned_status.push_str("No");}
+                    1 => {pinned_status.push_str("Yes");}
+                    _=> {panic!("Invalid pinned status!");}
+                }
                 println!("{}","<----------".cyan());
-                println!("| From Notebook: {}  Created: {}  Modified: {}",note.notebook.green().bold(), &note.created[..16].green().bold(), &note.modified[..16].green().bold());
+                println!("| From Notebook: {}",note.notebook.green().bold());
+                println!("| Pinned: {}  Created: {}  Modified: {}",pinned_status.green().bold(), &note.created[..16].green().bold(), &note.modified[..16].green().bold());
                 println!("{}","-----------".cyan());
                 println!("{}", note.content.trim());
                 println!("{}","---------->".cyan());
@@ -60,11 +68,10 @@ pub fn quick_note_cmd(option: &str, value: &str, conf: ConfigFile){
     let bg = conf.default_note_background;
     let conn = opendb(conf.database_file.as_str());
 
-    //println!("option = {}", option); //debug on;y **********
-    //println!("param = {}", param); //debug on;y **********
-
-    if option.len() > 0{
-        panic!("no options currently supported for this command!");
+    let mut pin = 0;
+    match option{
+        "--pin"| "-p" => {pin = 1;}
+     _=> {}
     }
 
     if value.len() == 0 {
@@ -83,15 +90,26 @@ pub fn quick_note_cmd(option: &str, value: &str, conf: ConfigFile){
         content: note_content,
         created: date_time_formatted.clone(),
         modified: date_time_formatted.clone(),
-        pinned: 0,
+        pinned: pin,
         back_colour: bg,
     };
 
-    write_note(&conn,note_details).expect("quick_note_cmd: error writing note");
+    write_note(&conn,note_details).expect("quick_note_cmd: error writing note!");
 
     //Now lets show the note we have just created
     let notes = get_recent_notes(&conn,1);
     display_notes(notes);
 
-    conn.close().expect("error closing db connection");
+    conn.close().expect("error closing db connection!");
+}
+
+
+pub fn pinned_notes_cmd(option: &str, value: &str, conf: ConfigFile){
+    if option.len() > 0{panic!("No options currently supported for this command!");}
+
+    let conn = opendb(conf.database_file.as_str());
+    let notes = get_pinned_notes(&conn);
+    display_notes(notes);
+
+
 }
