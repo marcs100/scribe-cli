@@ -79,5 +79,5 @@ fn display_help(){
     println!("    quick <content> - Write a quick note (incase note in quotes)");
     println!("         option : [--pin -p] pin the note");
     println!("    pinned - Display all pinned notes");
-    println!("         option : <NNone>");
+    println!("         option : <None>");
 }
