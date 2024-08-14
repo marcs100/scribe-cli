@@ -2,7 +2,11 @@ mod config;
 mod commands;
 mod scribe_database;
 
-use crate::commands::{quick_note_cmd,recent_notes_cmd,pinned_notes_cmd};
+use crate::commands::{
+    quick_note_cmd,
+    recent_notes_cmd,
+    pinned_notes_cmd
+};
 
 //use std::env;  //currently only being used for rust baccktrace
 

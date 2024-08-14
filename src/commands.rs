@@ -1,4 +1,10 @@
-use crate::scribe_database::{write_note, get_recent_notes,opendb,get_pinned_notes,NoteData};
+use crate::scribe_database::{
+    write_note,
+    get_recent_notes,
+    opendb,
+    get_pinned_notes,
+    NoteData
+};
 use crate::config::ConfigFile;
 use colored::Colorize;
 use std::string::String;
