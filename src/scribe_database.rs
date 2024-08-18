@@ -16,8 +16,9 @@ pub struct NoteData {
 #[derive(Default)]
 pub struct notebook{
       pub name: String,
+      pub colour: String,
       pub number_of_pages: i32,
-      pub current_page: i32,
+      pub mut current_page: i32,
       pub pages: Option<Vec<NoteData>>,
 }
 
@@ -40,6 +41,9 @@ pub fn opendb(database_file: &str) -> Connection{
       conn
 }
 
+pub fn get_notebook(name: &str) -> Option<Vec<NoteData>>{
+
+}
 
 pub fn get_recent_notes(conn: &Connection, num_notes: u32) -> Option<Vec<NoteData>>{
       let mut stmt: Statement = conn.prepare("SELECT * from marcnotes order by modified desc LIMIT :limit;").unwrap();
