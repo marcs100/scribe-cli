@@ -1,7 +1,7 @@
 use rusqlite::{Connection, Result, Statement};
 //use rusqlite::NO_PARAMS;
 
-#[derive(Debug)]
+#[derive(Default)]
 pub struct NoteData {
       pub id: i32,
       pub notebook: String,
@@ -13,6 +13,19 @@ pub struct NoteData {
       pub back_colour: String,
 }
 
+#[derive(Default)]
+pub struct notebook{
+      pub name: String,
+      pub number_of_pages: i32,
+      pub current_page: i32,
+      pub pages: Option<Vec<NoteData>>,
+}
+
+impl notebook{
+      pub fn GetNotebook(&mut self, notebook_name: &str){
+            self.name = String::from(notebook_name);
+      }
+}
 
 pub fn opendb(database_file: &str) -> Connection{
       
