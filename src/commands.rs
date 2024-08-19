@@ -3,13 +3,32 @@ use crate::scribe_database::{
     get_recent_notes,
     opendb,
     get_pinned_notes,
-    NoteData
+    NoteData,
+    Notebook
 };
+
+use crate::console_display::{display_error, display_notes};
 use crate::config::ConfigFile;
-use colored::Colorize;
 use std::string::String;
 use chrono::Local;
 
+
+pub fn notebook_cmd(value: &str, conf: ConfigFile){
+    let conn = opendb(conf.database_file.as_str());
+    let mut nb = Notebook::default();
+
+    nb.get(&conn, value); //populate notebook struucture
+
+    //For now just display all pages
+    //but in future we want to display one page at a time
+    if nb.pages.is_some(){
+         display_notes(nb.pages);
+    }
+    else {
+        display_error("Notebook not found");
+    }
+
+}
 
 pub fn recent_notes_cmd(option: &str, value: &str, conf: ConfigFile){
 
@@ -28,7 +47,7 @@ pub fn recent_notes_cmd(option: &str, value: &str, conf: ConfigFile){
                 num_notes = value.parse().expect("invalid option given");
             }
             else{
-                println!("expecting a value for count!");
+                display_error("expecting a value for count!");
                 return;
             }
         },
@@ -40,30 +59,6 @@ pub fn recent_notes_cmd(option: &str, value: &str, conf: ConfigFile){
     display_notes(notes);
 
     conn.close().expect("error closing db connection");
-}
-
-// helper functions to display the notes vector to screen.
-pub fn display_notes(notes: Option<Vec<NoteData>>){
-     match notes{
-        Some(note_data) => {
-            for note in note_data.iter(){
-                let mut pinned_status = String::new();
-                match note.pinned{
-                    0 => {pinned_status.push_str("No");}
-                    1 => {pinned_status.push_str("Yes");}
-                    _=> {panic!("Invalid pinned status!");}
-                }
-                println!("{}","<----------".cyan());
-                println!("| From Notebook: {}",note.notebook.green().bold());
-                println!("| Pinned: {}  Created: {}  Modified: {}",pinned_status.green().bold(), &note.created[..16].green().bold(), &note.modified[..16].green().bold());
-                println!("{}","-----------".cyan());
-                println!("{}", note.content.trim());
-                println!("{}","---------->".cyan());
-                println!("\n\n");
-            };
-        },
-        None => {println!("No recent notes returned");}
-    }
 }
 
 //writes one line of user input to the defualt note book
@@ -119,3 +114,4 @@ pub fn pinned_notes_cmd(option: &str, value: &str, conf: ConfigFile){
 
 
 }
+

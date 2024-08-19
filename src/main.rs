@@ -1,20 +1,31 @@
 mod config;
 mod commands;
 mod scribe_database;
+mod console_display;
+
+use console_display::{display_error, display_help};
 
 use crate::commands::{
     quick_note_cmd,
     recent_notes_cmd,
-    pinned_notes_cmd
+    pinned_notes_cmd,
+    notebook_cmd
 };
 
 //use std::env;  //currently only being used for rust baccktrace
 
 
-static VERSION: &str = "0.002 dev";
+static VERSION: &str = "0.003 dev";
 
 fn main() {
     let command = std::env::args().nth(1).expect("no command given");
+
+    //postfix match is experimental - won't compile'
+    /*let command = std::env::args().nth(1).match {
+        Some(s) => s,
+        None => {display_error("Missing command"); return}
+    };*/
+
     //let command = std::env::args().nth(1);
     let arg1 = std::env::args().nth(2);
     let arg2 = std::env::args().nth(3);
@@ -43,7 +54,8 @@ fn main() {
                     user_option.push_str(&s);
                 }
                 else{
-                    panic!("invalid option given");
+                    display_error("invalid option given");
+                    panic!();
                 }
             }
             else if valid_long_options.contains(&s.as_str()){
@@ -51,7 +63,8 @@ fn main() {
             }
             else{
                 if arg2.is_some(){
-                    panic!("Too many valueeters or bad option!"); //can't have 2 values and no option given'
+                    display_error("Too many valueeters or bad option!");
+                    panic!(); //can't have 2 values and no option given'
                 }
                 user_value.push_str(&s); //arg1 is a valueeter not an option
                 got_value = true;
@@ -71,17 +84,8 @@ fn main() {
         "recent" => {recent_notes_cmd(&user_option, &user_value, conf);},
         "quick" => {quick_note_cmd(&user_option, &user_value, conf);},
         "pinned" => {pinned_notes_cmd(&user_option, &user_value, conf);},
-         _ => {println!("No command!");},
+        "notebook" => {notebook_cmd(&user_value, conf);},
+         _ => {display_error("No command matched!");},
     }
 }
 
-fn display_help(){
-    println!("scribe-cli <command> <options>");
-    println!("commands:");
-    println!("    recent - Displays recent notes (number of notes to display is in scribe.config)");
-    println!("         option : [--count -c] number of recent notes to display (overrides scribe.config)");
-    println!("    quick <content> - Write a quick note (incase note in quotes)");
-    println!("         option : [--pin -p] pin the note");
-    println!("    pinned - Display all pinned notes");
-    println!("         option : <None>");
-}
