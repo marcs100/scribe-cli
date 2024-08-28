@@ -6,23 +6,29 @@ pub fn display_notes(notes: Option<Vec<NoteData>>){
     match notes{
         Some(note_data) => {
             for note in note_data.iter(){
-                let mut pinned_status = String::new();
-                match note.pinned{
-                    0 => {pinned_status.push_str("No");}
-                    1 => {pinned_status.push_str("Yes");}
-                    _=> {panic!("Invalid pinned status!");}
-                }
-                println!("{}","<----------".cyan());
-                println!("| From Notebook: {}",note.notebook.green().bold());
-                println!("| Pinned: {}  Created: {}  Modified: {}",pinned_status.green().bold(), &note.created[..16].green().bold(), &note.modified[..16].green().bold());
-                println!("{}","-----------".cyan());
-                println!("{}", note.content.trim());
-                println!("{}","---------->".cyan());
+               display_note(note);
             };
         },
         None => {println!("No recent notes returned");}
     }
 }
+
+//functiom to display a single note to screen
+pub fn display_note(note: &NoteData){
+    let mut pinned_status = String::new();
+    match note.pinned{
+        0 => {pinned_status.push_str("No");}
+        1 => {pinned_status.push_str("Yes");}
+        _=> {panic!("Invalid pinned status!");}
+    }
+    println!("{}","<----------".cyan());
+    println!("| From Notebook: {}",note.notebook.green().bold());
+    println!("| Pinned: {}  Created: {}  Modified: {}",pinned_status.green().bold(), &note.created[..16].green().bold(), &note.modified[..16].green().bold());
+    println!("{}","-----------".cyan());
+    println!("{}", note.content.trim());
+    println!("{}","---------->".cyan());
+}
+
 
 pub fn display_error(msg: &str){
     println!("{}: {}","Error".red(), msg.cyan());
