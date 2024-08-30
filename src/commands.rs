@@ -2,9 +2,12 @@ use crate::scribe_database::{
     get_pinned_notes, get_recent_notes, opendb, write_note, NoteData, Notebook,
 };
 
+use crate::terminal::{send_command, clear_screen};
+
 use crate::config::ConfigFile;
 use crate::console_display::{display_error, display_notes, display_note};
 use chrono::Local;
+use std::io::Read;
 use std::string::String;
 
 pub fn notebook_cmd(value: &str, conf: ConfigFile) {
@@ -33,9 +36,23 @@ pub fn notebook_cmd(value: &str, conf: ConfigFile) {
     while nb_exit == false {
         display_note(&pages[current_page]);
         println!("(n=next page  p=previous  q=quit)");
-        let stdin = std::io::stdin();
-        let user_in = stdin.;
-        if user_in == 'q'{break};
+
+
+        //This only works if return is pressed, which isn't really
+        //what I want!
+        let mut buf: [u8;1] = [0];
+        let mut stdin = std::io::stdin();
+        let user_in = stdin.read_exact(&mut buf).unwrap();
+        if buf[0].to_ascii_lowercase() == b'n'{
+            clear_screen();
+            println!("got n");
+        }
+        else{
+            println!("{:?}",buf);
+        }
+        //--------------------------------------------------------
+
+
         nb_exit = true;
     }
 }

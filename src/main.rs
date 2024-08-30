@@ -2,6 +2,7 @@ mod config;
 mod commands;
 mod scribe_database;
 mod console_display;
+mod terminal;
 
 use console_display::{display_error, display_help};
 
