@@ -2,10 +2,9 @@ use crate::scribe_database::{
     get_pinned_notes, get_recent_notes, opendb, write_note, NoteData, Notebook,
 };
 
-use crate::terminal::{send_command, clear_screen};
 
 use crate::config::ConfigFile;
-use crate::console_display::{display_error, display_notes, display_note};
+use crate::console::{display_error, display_notes, display_note};
 use chrono::Local;
 use std::io::Read;
 use std::string::String;
@@ -44,7 +43,7 @@ pub fn notebook_cmd(value: &str, conf: ConfigFile) {
         let mut stdin = std::io::stdin();
         let user_in = stdin.read_exact(&mut buf).unwrap();
         if buf[0].to_ascii_lowercase() == b'n'{
-            clear_screen();
+            //clear_screen();
             println!("got n");
         }
         else{

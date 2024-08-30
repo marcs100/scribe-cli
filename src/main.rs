@@ -1,10 +1,9 @@
 mod config;
 mod commands;
 mod scribe_database;
-mod console_display;
-mod terminal;
+mod console;
 
-use console_display::{display_error, display_help};
+use console::{display_error, display_help};
 
 use crate::commands::{
     quick_note_cmd,
