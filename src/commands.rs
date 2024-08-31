@@ -1,28 +1,22 @@
 use crate::scribe_database::{
     get_pinned_notes, get_recent_notes, opendb, write_note, NoteData, Notebook,
 };
-
-
 use crate::config::ConfigFile;
 use crate::console::{display_error, display_notes, display_note};
 use chrono::Local;
 use std::io::Read;
 use std::string::String;
+use std::io::{stdin, stdout, Write};
+use termion::event::Key;
+use termion::input::TermRead;
+use termion::raw::IntoRawMode;
+
 
 pub fn notebook_cmd(value: &str, conf: ConfigFile) {
     let conn = opendb(conf.database_file.as_str());
     let mut nb = Notebook::default();
 
     nb.get(&conn, value); //populate notebook struucture
-
-    //For now just display all pages
-    //but in future we want to display one page at a time
-    //if nb.pages.is_some(){
-    //    display_notes(nb.pages);
-    //}
-    //else {
-    //    display_error("Notebook not found");
-    //}
     if nb.pages.is_none() {
         display_error("Notebbok not found");
         return;
@@ -30,29 +24,42 @@ pub fn notebook_cmd(value: &str, conf: ConfigFile) {
 
     let mut nb_exit: bool = false;
     let pages = &nb.pages.unwrap();
-    let num_pages = pages.len();
-    let current_page = 1;
-    while nb_exit == false {
-        display_note(&pages[current_page]);
-        println!("(n=next page  p=previous  q=quit)");
+    let num_pages = pages.len()-1;
+    let mut current_page = 0; //using zero index for pages
+    let mut stdin = std::io::stdin();
+    let mut stdout = stdout().into_raw_mode().unwrap();
+    display_note(&pages[current_page]);
+    for c in stdin.keys() {
+        //clearing the screen and going to top left corner
+        /*write!(
+            stdout,
+            "{}{}",
+            termion::cursor::Goto(1, 1),
+               termion::clear::All
+        )
+        .unwrap();*/
 
+        //Process key presses
+        match c.unwrap() {
+            Key::Char('n') => {
+                if current_page < num_pages{
+                    current_page += 1;
+                    display_note(&pages[current_page]);
+                }
 
-        //This only works if return is pressed, which isn't really
-        //what I want!
-        let mut buf: [u8;1] = [0];
-        let mut stdin = std::io::stdin();
-        let user_in = stdin.read_exact(&mut buf).unwrap();
-        if buf[0].to_ascii_lowercase() == b'n'{
-            //clear_screen();
-            println!("got n");
+            },
+            Key::Char('p') => {
+                if current_page > 0{
+                    current_page -= 1;
+                    display_note(&pages[current_page]);
+                }
+            },
+            Key::Char('q') => break,
+            Key::Char('e') => println!("Edit is not supported yet (coming soon!)"),
+            _ => (),
         }
-        else{
-            println!("{:?}",buf);
-        }
-        //--------------------------------------------------------
 
-
-        nb_exit = true;
+        stdout.flush().unwrap();
     }
 }
 
