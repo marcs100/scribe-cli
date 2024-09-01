@@ -22,19 +22,23 @@ pub fn notebook_cmd(value: &str, conf: ConfigFile) {
         return;
     }
 
-    let mut nb_exit: bool = false;
+
     let pages = &nb.pages.unwrap();
+    // **** debug only ********
+    //display_note(&pages[0]);
+    //return;
+    //*************************
     let num_pages = pages.len()-1;
     let mut current_page = 0; //using zero index for pages
     let mut stdin = std::io::stdin();
-    let mut stdout = stdout().into_raw_mode().unwrap();
+    let mut stdout = stdout().into_raw_mode().unwrap(); //this messes up formatting is display_note()
     display_note(&pages[current_page]);
     for c in stdin.keys() {
         //clearing the screen and going to top left corner
         /*write!(
             stdout,
             "{}{}",
-            termion::cursor::Goto(1, 1),
+            termion::cursor::Goto(1, 1),s
                termion::clear::All
         )
         .unwrap();*/
@@ -44,6 +48,7 @@ pub fn notebook_cmd(value: &str, conf: ConfigFile) {
             Key::Char('n') => {
                 if current_page < num_pages{
                     current_page += 1;
+                    let cont: &str = pages[current_page].content.as_str();
                     display_note(&pages[current_page]);
                 }
 
