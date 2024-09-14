@@ -2,7 +2,7 @@ use crate::scribe_database::{
     get_pinned_notes, get_recent_notes, opendb, write_note, NoteData, Notebook,
 };
 use crate::config::ConfigFile;
-use crate::console::{display_error, display_notes, display_note, display_note_raw};
+use crate::console::{display_error, display_notes, display_note_raw};
 use chrono::Local;
 use std::string::String;
 use std::io::{stdin, stdout, Write};
