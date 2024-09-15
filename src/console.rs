@@ -1,10 +1,12 @@
 use colored::Colorize;
 use crate::scribe_database::NoteData;
+use std::string::String;
 use std::io::{stdin, stdout, Write};
-//use termion::event::Key;
-//use termion::input::TermRead;
+use termion::event::Key;
+use termion::input::TermRead;
 use termion::raw::IntoRawMode;
-use termion::raw::RawTerminal;
+use termion::clear;
+use termion::cursor;
 
 //function to display the notes vector to screen.
 pub fn display_notes(notes: Option<Vec<NoteData>>){
@@ -62,6 +64,54 @@ pub fn display_note(note: &NoteData){
     println!("{}","-----------".cyan());
     println!("{}", note.content.trim());
     println!("{}","---------->".cyan());
+}
+
+//function to show notebook book pages one page at a time
+//User can navogate with keyboard
+pub fn pages_view(pages: &Vec<NoteData>){
+    
+    let num_pages = pages.len()-1;
+    let mut current_page = 0; //using zero index for pages
+    let stdin = stdin();
+    let mut stdout_raw = stdout().into_raw_mode().expect("termion - error -  into_raw_mode");//this messes up formatting is display_note()
+
+    write!(stdout_raw,"{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
+    display_note_raw(&pages[current_page]);
+    write!(stdout_raw,"{}", "n = next;  p = previous  q = quit" ).unwrap();
+    stdout_raw.flush().unwrap();
+    for c in stdin.keys() {
+        //clearing the screen and going to top left corner
+        //Process key presses
+        match c.unwrap() {
+            Key::Char('n') => {
+                if current_page < num_pages{
+                    current_page += 1;
+                    write!(stdout_raw,"{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
+                    display_note_raw(&pages[current_page]);
+                    write!(stdout_raw,"{}", "n = next;  p = previous  q = quit" ).unwrap();
+                }
+
+            },
+            Key::Char('p') => {
+                if current_page > 0{
+                    current_page -= 1;
+                    write!(stdout_raw,"{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
+                    display_note_raw(&pages[current_page]);
+                    write!(stdout_raw,"{}", "n = next;  p = previous  q = quit" ).unwrap();
+                }
+            },
+            Key::Char('q') => break,
+            Key::Char('e') => {
+                write!(stdout_raw,"{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
+                write!(stdout_raw, "Edit is not supported yet (coming soon!)\r\n");
+                stdout_raw.flush().unwrap();
+                break;
+            },
+            _ => (),
+        }
+
+        stdout_raw.flush().unwrap();
+    }
 }
 
 

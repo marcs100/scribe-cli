@@ -2,7 +2,7 @@ use crate::scribe_database::{
     get_pinned_notes, get_recent_notes, opendb, write_note, NoteData, Notebook,
 };
 use crate::config::ConfigFile;
-use crate::console::{display_error, display_notes, display_note_raw};
+use crate::console::{display_error, display_notes, display_note_raw, pages_view};
 use chrono::Local;
 use std::string::String;
 use std::io::{stdin, stdout, Write};
@@ -22,51 +22,9 @@ pub fn notebook_cmd(value: &str, conf: ConfigFile) {
         display_error("Notebbok not found");
         return;
     }
-
-
+   
     let pages = &nb.pages.unwrap();
-    let num_pages = pages.len()-1;
-    let mut current_page = 0; //using zero index for pages
-    let stdin = stdin();
-    let mut stdout_raw = stdout().into_raw_mode().unwrap(); //this messes up formatting is display_note()
-
-    write!(stdout_raw,"{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
-    display_note_raw(&pages[current_page]);
-    write!(stdout_raw,"{}", "n = next;  p = previous  q = quit" ).unwrap();
-    stdout_raw.flush().unwrap();
-    for c in stdin.keys() {
-        //clearing the screen and going to top left corner
-        //Process key presses
-        match c.unwrap() {
-            Key::Char('n') => {
-                if current_page < num_pages{
-                    current_page += 1;
-                    write!(stdout_raw,"{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
-                    display_note_raw(&pages[current_page]);
-                    write!(stdout_raw,"{}", "n = next;  p = previous  q = quit" ).unwrap();
-                }
-
-            },
-            Key::Char('p') => {
-                if current_page > 0{
-                    current_page -= 1;
-                    write!(stdout_raw,"{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
-                    display_note_raw(&pages[current_page]);
-                    write!(stdout_raw,"{}", "n = next;  p = previous  q = quit" ).unwrap();
-                }
-            },
-            Key::Char('q') => break,
-            Key::Char('e') => {
-                write!(stdout_raw,"{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
-                write!(stdout_raw, "Edit is not supported yet (coming soon!)\r\n");
-                stdout_raw.flush().unwrap();
-                break;
-            },
-            _ => (),
-        }
-
-        stdout_raw.flush().unwrap();
-    }
+    pages_view(&pages);
 }
 
 pub fn recent_notes_cmd(option: &str, value: &str, conf: ConfigFile) {
