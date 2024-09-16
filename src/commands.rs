@@ -2,15 +2,9 @@ use crate::scribe_database::{
     get_pinned_notes, get_recent_notes, opendb, write_note, NoteData, Notebook,
 };
 use crate::config::ConfigFile;
-use crate::console::{display_error, display_notes, display_note_raw, pages_view};
+use crate::console::{display_error, display_notes, pages_view};
 use chrono::Local;
 use std::string::String;
-use std::io::{stdin, stdout, Write};
-use termion::event::Key;
-use termion::input::TermRead;
-use termion::raw::IntoRawMode;
-use termion::clear;
-use termion::cursor;
 
 
 pub fn notebook_cmd(value: &str, conf: ConfigFile) {
