@@ -53,7 +53,11 @@ pub fn recent_notes_cmd(option: &str, value: &str, conf: ConfigFile) {
 
     let notes = get_recent_notes(&conn, num_notes);
 
-    display_notes(notes);
+    //display_notes(notes);
+    match notes{
+        Some(pages) => pages_view(&pages),
+        None => ()
+    }
 
     conn.close().expect("error closing db connection");
 }
