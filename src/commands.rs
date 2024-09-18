@@ -107,5 +107,10 @@ pub fn pinned_notes_cmd(option: &str, value: &str, conf: ConfigFile) {
 
     let conn = opendb(conf.database_file.as_str());
     let notes = get_pinned_notes(&conn);
-    display_notes(notes);
+    //display_notes(notes);
+    
+    match notes{
+        Some(pages) => pages_view(&pages),
+        None => ()
+    }
 }
