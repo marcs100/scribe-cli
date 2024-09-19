@@ -1,5 +1,5 @@
 use colored::Colorize;
-use crate::scribe_database::NoteData;
+use crate::scribe_database::{NoteData, NotebookCoverData};
 use std::string::String;
 use std::io::{stdin, stdout, Write};
 use termion::event::Key;
@@ -114,6 +114,16 @@ pub fn pages_view(pages: &Vec<NoteData>){
     }
 }
 
+pub fn display_notebook_names(notebooks: &Vec<NotebookCoverData>){
+    if notebooks.len() > 0 {
+        println!("{}","--Notebooks--".green().bold());
+    }
+    
+    for notebook_name in notebooks.iter(){
+        println!("{}",notebook_name.notebook);        
+    }
+}
+
 
 pub fn display_error(msg: &str){
     println!("{}: {}","Error".red(), msg.cyan());
@@ -133,6 +143,8 @@ pub fn display_help(){
     println!("    pinned - Display all pinned notes");
     println!("         option : <None>");
     println!("    notebook <notebook name> - Display an entire notbbook");
+    println!("         option : <None>");
+    println!("    list - Displays a list of available notebook nmaes");
     println!("         option : <None>");
 }
 

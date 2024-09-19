@@ -1,8 +1,15 @@
 use crate::scribe_database::{
-    get_pinned_notes, get_recent_notes, opendb, write_note, NoteData, Notebook,
+    get_notebook_names, 
+    get_pinned_notes, 
+    get_recent_notes, 
+    opendb, 
+    write_note, 
+    NoteData, 
+    Notebook, 
+    NotebookCoverData
 };
 use crate::config::ConfigFile;
-use crate::console::{display_error, display_notes, pages_view};
+use crate::console::{display_error, display_notebook_names, display_notes, pages_view};
 use chrono::Local;
 use std::string::String;
 
@@ -105,12 +112,37 @@ pub fn pinned_notes_cmd(option: &str, value: &str, conf: ConfigFile) {
         panic!("No options currently supported for this command!");
     }
 
+    if value.len() > 0{
+        panic!("No value allowed for this command!")
+    }  
+
     let conn = opendb(conf.database_file.as_str());
     let notes = get_pinned_notes(&conn);
     //display_notes(notes);
     
     match notes{
         Some(pages) => pages_view(&pages),
+        None => ()
+    }
+}
+
+pub fn list_cmd(option: &str, value: &str, conf: ConfigFile){
+    
+    if option.len() > 0 {
+        panic!("No options currently supported for this command!");
+    }
+
+    if value.len() > 0{
+        panic!("No value allowed for this command!")
+    }  
+
+    let conn = opendb(conf.database_file.as_str());
+    let notebooks = get_notebook_names(&conn);
+    //display_notes(notes);
+    
+    match notebooks{
+        Some(notebook_names) => display_notebook_names(&notebook_names),
+        
         None => ()
     }
 }

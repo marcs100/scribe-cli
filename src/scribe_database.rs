@@ -13,6 +13,13 @@ pub struct NoteData {
       pub back_colour: String,
 }
 
+
+#[derive(Default)]
+pub struct NotebookCoverData {
+      pub id: i32,
+      pub notebook: String,
+}
+
 #[derive(Default)]
 pub struct Notebook{
       pub name: String,
@@ -48,13 +55,13 @@ impl Notebook{
             let row_iter = stmt.query_map(&[(":nb", name)], |row| {
                   Ok(NoteData{
                         id: row.get(0)?,
-                     notebook: row.get(1)?,
-                     tag: row.get(2)?,
-                     content: row.get(3)?,
-                     created: row.get(4)?,
-                     modified: row.get(5)?,
-                     pinned: row.get(6)?,
-                     back_colour: row.get(7)?
+                        notebook: row.get(1)?,
+                        tag: row.get(2)?,
+                        content: row.get(3)?,
+                        created: row.get(4)?,
+                        modified: row.get(5)?,
+                        pinned: row.get(6)?,
+                        back_colour: row.get(7)?
                   })
             }).expect("get_notebook: error getting row");
 
@@ -90,7 +97,7 @@ pub fn get_recent_notes(conn: &Connection, num_notes: u32) -> Option<Vec<NoteDat
       let mut stmt: Statement = conn.prepare("SELECT * from marcnotes order by modified desc LIMIT :limit;").unwrap();
       let row_iter = stmt.query_map(&[(":limit", num_notes.to_string().as_str())], |row| {
             Ok(NoteData{
-                  id: row.get(0)?,
+               id: row.get(0)?,
                notebook: row.get(1)?,
                tag: row.get(2)?,
                content: row.get(3)?,
@@ -118,13 +125,13 @@ pub fn write_note(conn: &Connection, note_details: NoteData)-> Result<usize>{
 
       let result = conn.execute(
             "insert into marcnotes (notebook, tag, content, created, modified, pinned, BGColour) values (?,?,?,?,?,?,?)",
-                                (note_details.notebook,
-                                 note_details.tag,
-                                 note_details.content.replace("\\n","\n"),
-                                 note_details.created,
-                                 note_details.modified,
-                                 note_details.pinned,
-                                 note_details.back_colour));  //.expect("write_note: error with sqlite query");
+                    (note_details.notebook,
+                     note_details.tag,
+                     note_details.content.replace("\\n","\n"),
+                     note_details.created,
+                     note_details.modified,
+                     note_details.pinned,
+                     note_details.back_colour));  //.expect("write_note: error with sqlite query");
 
       result
 }
@@ -155,4 +162,26 @@ pub fn get_pinned_notes(conn: &Connection) -> Option<Vec<NoteData>>{
       if notes.len() == 0 {return None;}
 
       Some(notes)
+}
+
+pub fn get_notebook_names(conn: &Connection) -> Option<Vec<NotebookCoverData>>{
+            
+      let mut stmt: Statement = conn.prepare("SELECT distinct notebook from marcnotes order by modified desc").unwrap();
+      let row_iter = stmt.query_map([], |row|{
+            Ok(NotebookCoverData{
+                  id: row.get(0)?,
+                  notebook: row.get(1)?,
+            })
+      }).expect("get_notebook_names: error getting row");
+
+      let mut notebook_names: Vec<NotebookCoverData> = vec![];
+
+      for row_data in row_iter {
+            let notebook_name = row_data.expect("get_notebook_names: error getting row data");
+            notebook_names.push(notebook_name);
+      }
+      
+      if notebook_names.len() == 0 {return None;}
+
+      Some(notebook_names)
 }

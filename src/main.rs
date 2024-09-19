@@ -9,7 +9,8 @@ use crate::commands::{
     quick_note_cmd,
     recent_notes_cmd,
     pinned_notes_cmd,
-    notebook_cmd
+    notebook_cmd,
+    list_cmd
 };
 
 //use std::env;  //currently only being used for rust baccktrace
@@ -85,6 +86,7 @@ fn main() {
         "quick" => {quick_note_cmd(&user_option, &user_value, conf);},
         "pinned" => {pinned_notes_cmd(&user_option, &user_value, conf);},
         "notebook" => {notebook_cmd(&user_value, conf);},
+        "list" => {list_cmd(&user_value, &user_value, conf);},
          _ => {display_error("No command matched!");},
     }
 }
