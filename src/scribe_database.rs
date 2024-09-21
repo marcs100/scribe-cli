@@ -1,3 +1,4 @@
+
 use rusqlite::{Connection, Result, Statement};
 //use rusqlite::NO_PARAMS;
 
@@ -14,10 +15,10 @@ pub struct NoteData {
 }
 
 
-#[derive(Default)]
-pub struct NotebookCoverData {
-      pub id: i32,
-      pub notebook: String,
+ #[derive(Default)]
+ pub struct NotebookCoverData {
+       pub notebook: String,
+       pub colour: String,
 }
 
 #[derive(Default)]
@@ -166,11 +167,11 @@ pub fn get_pinned_notes(conn: &Connection) -> Option<Vec<NoteData>>{
 
 pub fn get_notebook_names(conn: &Connection) -> Option<Vec<NotebookCoverData>>{
             
-      let mut stmt: Statement = conn.prepare("SELECT distinct notebook from marcnotes order by modified desc").unwrap();
+      let mut stmt: Statement = conn.prepare("SELECT * from notebookCovers order by name asc").unwrap();
       let row_iter = stmt.query_map([], |row|{
             Ok(NotebookCoverData{
-                  id: row.get(0)?,
-                  notebook: row.get(1)?,
+                  notebook: row.get(0)?,
+                  colour: row.get(1)?, 
             })
       }).expect("get_notebook_names: error getting row");
 

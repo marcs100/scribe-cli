@@ -120,7 +120,7 @@ pub fn display_notebook_names(notebooks: &Vec<NotebookCoverData>){
     }
     
     for notebook_name in notebooks.iter(){
-        println!("{}",notebook_name.notebook);        
+        println!("    {}",notebook_name.notebook);        
     }
 }
 

@@ -64,7 +64,7 @@ fn main() {
             }
             else{
                 if arg2.is_some(){
-                    display_error("Too many valueeters or bad option!");
+                    display_error("Too many values or bad option!");
                     panic!(); //can't have 2 values and no option given'
                 }
                 user_value.push_str(&s); //arg1 is a valueeter not an option
