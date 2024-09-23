@@ -80,7 +80,9 @@ pub fn quick_note_cmd(option: &str, value: &str, conf: ConfigFile) {
     }
 
     if value.len() == 0 {
-        panic!("No note contents to write!");
+        //panic!("No note contents to write!");
+        display_error("No note contents to write!");
+        return;
     }
 
     let dt = Local::now();
@@ -109,11 +111,14 @@ pub fn quick_note_cmd(option: &str, value: &str, conf: ConfigFile) {
 
 pub fn pinned_notes_cmd(option: &str, value: &str, conf: ConfigFile) {
     if option.len() > 0 {
-        panic!("No options currently supported for this command!");
+        //panic!("No options currently supported for this command!");
+        display_error("No options currently supported for this command");
+        return;
     }
 
     if value.len() > 0{
-        panic!("No value allowed for this command!")
+        display_error("No value allowed for this command!");
+        return;
     }  
 
     let conn = opendb(conf.database_file.as_str());
@@ -129,11 +134,15 @@ pub fn pinned_notes_cmd(option: &str, value: &str, conf: ConfigFile) {
 pub fn list_cmd(option: &str, value: &str, conf: ConfigFile){
     
     if option.len() > 0 {
-        panic!("No options currently supported for this command!");
+        //panic!("No options currently supported for this command!");
+        display_error("No options currently supported for this command");
+        return;
     }
 
     if value.len() > 0{
-        panic!("No value allowed for this command!")
+        //panic!("No value allowed for this command!")
+        display_error("No value allowed for this command");
+        return;
     }  
 
     let conn = opendb(conf.database_file.as_str());
