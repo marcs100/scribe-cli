@@ -152,6 +152,6 @@ pub fn list_cmd(option: &str, value: &str, conf: ConfigFile){
     match notebooks{
         Some(notebook_names) => display_notebook_names(&notebook_names),
         
-        None => ()
+        None => return
     }
 }

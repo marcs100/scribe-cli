@@ -7,6 +7,8 @@ use termion::input::TermRead;
 use termion::raw::IntoRawMode;
 use termion::clear;
 use termion::cursor;
+use std::io;
+use std::io::*;
 
 //function to display the notes vector to screen.
 pub fn display_notes(notes: Option<Vec<NoteData>>){
@@ -114,13 +116,26 @@ pub fn pages_view(pages: &Vec<NoteData>){
     }
 }
 
+
+
+pub fn get_user_input(msg: &str)->Result<String>{
+    println!({msg});
+    let mut input = String::new();
+    io::stdin::().read_line(&mut input).expect("error: unable to read user input");
+    //println!("{}",input);
+    Result(input)
+}
+
+
 pub fn display_notebook_names(notebooks: &Vec<NotebookCoverData>){
     if notebooks.len() > 0 {
         println!("{}","--Notebooks--".green().bold());
     }
     
+    let mut nb_index = 1;
     for notebook_name in notebooks.iter(){
-        println!("    {}",notebook_name.notebook);        
+        println!("   {}. {}",nb_index, notebook_name.notebook);        
+        nb_index+=1;
     }
 }
 
