@@ -9,7 +9,7 @@ use crate::scribe_database::{
     NotebookCoverData
 };
 use crate::config::ConfigFile;
-use crate::console::{display_error, display_notebook_names, display_notes, pages_view};
+use crate::console::{self, display_error, display_notebook_names, display_notes, pages_view};
 use chrono::Local;
 use std::string::String;
 
@@ -150,7 +150,10 @@ pub fn list_cmd(option: &str, value: &str, conf: ConfigFile){
     //display_notes(notes);
     
     match notebooks{
-        Some(notebook_names) => display_notebook_names(&notebook_names),
+        Some(notebook_names) => {
+            display_notebook_names(&notebook_names);
+            let result = console::get_user_input("<num> = browse notebook, q=quit");
+        },
         
         None => return
     }

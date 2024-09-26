@@ -119,11 +119,11 @@ pub fn pages_view(pages: &Vec<NoteData>){
 
 
 pub fn get_user_input(msg: &str)->Result<String>{
-    println!({msg});
+    println!("{msg}");
     let mut input = String::new();
-    io::stdin::().read_line(&mut input).expect("error: unable to read user input");
+    io::stdin().read_line(&mut input)?;//.expect("error: unable to read user input");
     //println!("{}",input);
-    Result(input)
+    Ok(input)
 }
 
 
