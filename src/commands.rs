@@ -11,6 +11,8 @@ use crate::scribe_database::{
 use crate::config::ConfigFile;
 use crate::console::{self, display_error, display_notebook_names, display_notes, pages_view};
 use chrono::Local;
+use termion::input;
+use std::borrow::Borrow;
 use std::string::String;
 
 
@@ -20,7 +22,7 @@ pub fn notebook_cmd(value: &str, conf: ConfigFile) {
 
     nb.get(&conn, value); //populate notebook struucture
     if nb.pages.is_none() {
-        display_error("Notebbok not found");
+        display_error("Notebook not found");
         return;
     }
    
@@ -148,13 +150,47 @@ pub fn list_cmd(option: &str, value: &str, conf: ConfigFile){
     let conn = opendb(conf.database_file.as_str());
     let notebooks = get_notebook_names(&conn);
     //display_notes(notes);
-    
+
     match notebooks{
         Some(notebook_names) => {
             display_notebook_names(&notebook_names);
-            let result = console::get_user_input("<num> = browse notebook, q=quit");
+            let result = console::get_user_input("\nEnter notebook number to browse or just enter to quit");
+            match result{
+                Ok(s) => {
+                    let input_val = s.trim();
+                    if input_val.len()==0{
+                        println!("quitting");
+                        return;
+                    }
+                    else{
+                        //do we have a number?
+                        let mut notebook_number = 0;
+                        notebook_number = input_val.parse().expect("Invalid input - not numeric");
+                        if notebook_number > notebook_names.len(){
+                             display_error("notebook number is out of range");
+                             return;           
+                        }
+                        else{
+                            let notebook_name = notebook_names[notebook_number-1].notebook.as_str(); //populate selected notebook name
+
+                            let mut nb = Notebook::default();
+
+                            nb.get(&conn,notebook_name); //populate notebook struucture
+                            if nb.pages.is_none() {
+                                display_error("Notebook not found");
+                                return;
+                            }
+
+                            let pages = &nb.pages.unwrap();
+                            pages_view(&pages);
+                        }
+                    }
+                },
+                Err(error) => panic!("Invalid input: {error:?}")
+            }
         },
         
         None => return
     }
+   
 }
