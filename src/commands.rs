@@ -165,8 +165,12 @@ pub fn list_cmd(option: &str, value: &str, conf: ConfigFile){
                     else{
                         //do we have a number?
                         let mut notebook_number = 0;
-                        notebook_number = input_val.parse().expect("Invalid input - not numeric");
-                        if notebook_number > notebook_names.len(){
+                        notebook_number = input_val.parse().unwrap_or_else(|_|0);
+                        if notebook_number == 0{
+                            display_error("non-numeric value entered");
+                            return;
+                        }
+                        else if notebook_number > notebook_names.len(){
                              display_error("notebook number is out of range");
                              return;           
                         }
@@ -181,7 +185,7 @@ pub fn list_cmd(option: &str, value: &str, conf: ConfigFile){
                                 return;
                             }
 
-                            let pages = &nb.pages.unwrap();
+                            let pages = &nb.pages.expect("error processing notebook pages");
                             pages_view(&pages);
                         }
                     }

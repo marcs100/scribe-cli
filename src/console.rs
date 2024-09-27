@@ -102,7 +102,10 @@ pub fn pages_view(pages: &Vec<NoteData>){
                     write!(stdout_raw,"{}", "n = next;  p = previous  q = quit" ).unwrap();
                 }
             },
-            Key::Char('q') => break,
+            Key::Char('q') => {
+                write!(stdout_raw,"\r\n");
+                break;
+            }
             Key::Char('e') => {
                 write!(stdout_raw,"{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
                 write!(stdout_raw, "Edit is not supported yet (coming soon!)\r\n");
