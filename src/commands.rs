@@ -1,20 +1,11 @@
-use crate::scribe_database::{
-    get_notebook_names, 
-    get_pinned_notes, 
-    get_recent_notes, 
-    opendb, 
-    write_note, 
-    NoteData, 
-    Notebook, 
-    NotebookCoverData
-};
 use crate::config::ConfigFile;
 use crate::console::{self, display_error, display_notebook_names, display_notes, pages_view};
+use crate::scribe_database::{
+    get_notebook_names, get_pinned_notes, get_recent_notes, opendb, write_note, NoteData, Notebook,
+    NotebookCoverData,
+};
 use chrono::Local;
-use termion::input;
-use std::borrow::Borrow;
 use std::string::String;
-
 
 pub fn notebook_cmd(value: &str, conf: ConfigFile) {
     let conn = opendb(conf.database_file.as_str());
@@ -25,7 +16,7 @@ pub fn notebook_cmd(value: &str, conf: ConfigFile) {
         display_error("Notebook not found");
         return;
     }
-   
+
     let pages = &nb.pages.unwrap();
     pages_view(&pages);
 }
@@ -57,9 +48,9 @@ pub fn recent_notes_cmd(option: &str, value: &str, conf: ConfigFile) {
     let notes = get_recent_notes(&conn, num_notes);
 
     //display_notes(notes);
-    match notes{
+    match notes {
         Some(pages) => pages_view(&pages),
-        None => ()
+        None => (),
     }
 
     conn.close().expect("error closing db connection");
@@ -118,67 +109,65 @@ pub fn pinned_notes_cmd(option: &str, value: &str, conf: ConfigFile) {
         return;
     }
 
-    if value.len() > 0{
+    if value.len() > 0 {
         display_error("No value allowed for this command!");
         return;
-    }  
+    }
 
     let conn = opendb(conf.database_file.as_str());
     let notes = get_pinned_notes(&conn);
     //display_notes(notes);
-    
-    match notes{
+
+    match notes {
         Some(pages) => pages_view(&pages),
-        None => ()
+        None => (),
     }
 }
 
-pub fn list_cmd(option: &str, value: &str, conf: ConfigFile){
-    
+pub fn list_cmd(option: &str, value: &str, conf: ConfigFile) {
     if option.len() > 0 {
         //panic!("No options currently supported for this command!");
         display_error("No options currently supported for this command");
         return;
     }
 
-    if value.len() > 0{
+    if value.len() > 0 {
         //panic!("No value allowed for this command!")
         display_error("No value allowed for this command");
         return;
-    }  
+    }
 
     let conn = opendb(conf.database_file.as_str());
     let notebooks = get_notebook_names(&conn);
     //display_notes(notes);
 
-    match notebooks{
+    match notebooks {
         Some(notebook_names) => {
             display_notebook_names(&notebook_names);
-            let result = console::get_user_input("\nEnter notebook number to browse or just enter to quit");
-            match result{
+            let result =
+                console::get_user_input("\nEnter notebook number to browse or just enter to quit");
+            match result {
                 Ok(s) => {
                     let input_val = s.trim();
-                    if input_val.len()==0{
+                    if input_val.len() == 0 {
                         println!("quitting");
                         return;
-                    }
-                    else{
+                    } else {
                         //do we have a number?
-                        let notebook_number = input_val.parse().unwrap_or_else(|_|0);
-                        if notebook_number == 0{
+                        let notebook_number = input_val.parse().unwrap_or_else(|_| 0);
+                        if notebook_number == 0 {
                             display_error("non-numeric value entered");
                             return;
-                        }
-                        else if notebook_number > notebook_names.len(){
-                             display_error("notebook number is out of range");
-                             return;           
-                        }
-                        else{
-                            let notebook_name = notebook_names[notebook_number-1].notebook.as_str(); //populate selected notebook name
+                        } else if notebook_number > notebook_names.len() {
+                            display_error("notebook number is out of range");
+                            return;
+                        } else {
+                            let notebook_name =
+                                notebook_names[notebook_number - 1].notebook.as_str(); //populate selected notebook name
 
                             let mut nb = Notebook::default();
 
-                            nb.get(&conn,notebook_name); //populate notebook struucture
+                            nb.get(&conn, notebook_name); //populate notebook struucture
                             if nb.pages.is_none() {
                                 display_error("Notebook not found");
                                 return;
@@ -188,12 +177,11 @@ pub fn list_cmd(option: &str, value: &str, conf: ConfigFile){
                             pages_view(&pages);
                         }
                     }
-                },
-                Err(error) => panic!("Invalid input: {error:?}")
+                }
+                Err(error) => panic!("Invalid input: {error:?}"),
             }
-        },
-        
-        None => return
+        }
+
+        None => return,
     }
-   
 }
