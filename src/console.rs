@@ -182,7 +182,7 @@ pub fn display_help() {
     println!("commands:");
     println!("    recent - Displays recent notes (number of notes to display is in scribe.config)");
     println!("         option : [--count -c] number of recent notes to display (overrides scribe.config)");
-    println!("    quick <content> - Write a quick note (incase note in quotes)");
+    println!("    note <content> - Write a quick note (incase note in quotes)");
     println!("         option : [--pin -p] pin the note");
     println!("    pinned - Display all pinned notes");
     println!("         option : <None>");
