@@ -36,7 +36,7 @@ pub fn display_notes(notes: Option<Vec<NoteData>>) {
 
  4) It disables scrolling.
 */
-pub fn display_note_raw(note: &NoteData) {
+pub fn display_note_raw(note: &NoteData, current_page: usize, num_pages: usize) {
     let mut stdout = stdout().into_raw_mode().unwrap();
     let mut pinned_status = String::new();
     match note.pinned {
@@ -53,8 +53,10 @@ pub fn display_note_raw(note: &NoteData) {
     write!(stdout, "{}", "<----------\r\n".cyan()).unwrap();
     write!(
         stdout,
-        "| From Notebook: {}\r\n",
-        note.notebook.green().bold()
+        "| From Notebook: {}  Page {} of {}\r\n",
+        note.notebook.green().bold(),
+        current_page,
+        num_pages
     )
     .unwrap();
     write!(
@@ -109,7 +111,7 @@ pub fn pages_view(pages: &Vec<NoteData>) {
         .expect("termion - error -  into_raw_mode"); //this messes up formatting is display_note()
 
     write!(stdout_raw, "{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
-    display_note_raw(&pages[current_page]);
+    display_note_raw(&pages[current_page], current_page, num_pages);
     write!(stdout_raw, "{}", "j = next;  h = previous  q = quit").unwrap();
     stdout_raw.flush().unwrap();
     for c in stdin.keys() {
@@ -120,7 +122,7 @@ pub fn pages_view(pages: &Vec<NoteData>) {
                 if current_page < num_pages {
                     current_page += 1;
                     write!(stdout_raw, "{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
-                    display_note_raw(&pages[current_page]);
+                    display_note_raw(&pages[current_page], current_page, num_pages);
                     write!(stdout_raw, "{}", "j = next;  h = previous  q = quit").unwrap();
                 }
             }
@@ -128,7 +130,7 @@ pub fn pages_view(pages: &Vec<NoteData>) {
                 if current_page > 0 {
                     current_page -= 1;
                     write!(stdout_raw, "{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
-                    display_note_raw(&pages[current_page]);
+                    display_note_raw(&pages[current_page], current_page, num_pages);
                     write!(stdout_raw, "{}", "j = next;  h = previous  q = quit").unwrap();
                 }
             }

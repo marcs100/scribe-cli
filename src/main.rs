@@ -3,7 +3,7 @@ mod config;
 mod console;
 mod scribe_database;
 
-use console::{display_error, display_help};
+use console::{display_error, display_help, display_warning};
 
 use crate::commands::{list_cmd, notebook_cmd, pinned_notes_cmd, quick_note_cmd, recent_notes_cmd};
 
@@ -89,7 +89,7 @@ fn main() {
             list_cmd(&user_value, &user_value, conf);
         }
         _ => {
-            display_error("No command matched!");
+            display_warning("No command matched!");
         }
     }
 }
