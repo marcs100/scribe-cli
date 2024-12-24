@@ -55,8 +55,8 @@ pub fn display_note_raw(note: &NoteData, current_page: usize, num_pages: usize) 
         stdout,
         "| From Notebook: {}  Page {} of {}\r\n",
         note.notebook.green().bold(),
-        current_page,
-        num_pages
+        current_page+1,
+        num_pages+1
     )
     .unwrap();
     write!(
