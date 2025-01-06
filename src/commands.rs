@@ -152,8 +152,7 @@ pub fn list_cmd(option: &str, value: &str, conf: ConfigFile) {
                     if input_val.len() == 0 {
                         println!("quitting");
                         return;
-                    }
-                    else {
+                    }else {
                         //do we have a number?
                         let notebook_number = input_val.parse().unwrap_or_else(|_| 0);
                         if notebook_number == 0 {
