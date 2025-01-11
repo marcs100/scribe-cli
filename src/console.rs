@@ -112,7 +112,7 @@ pub fn pages_view(pages: &Vec<NoteData>) {
 
     write!(stdout_raw, "{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
     display_note_raw(&pages[current_page], current_page, num_pages);
-    write!(stdout_raw, "{}", "j = next;  h = previous  q = quit").unwrap();
+    write!(stdout_raw, "{}", "l = next;  h = previous  q = quit").unwrap();
     stdout_raw.flush().unwrap();
     for c in stdin.keys() {
         //clearing the screen and going to top left corner
