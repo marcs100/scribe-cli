@@ -9,6 +9,7 @@ use termion::cursor;
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
+use termion::raw::RawTerminal;
 
 //function to display the notes vector to screen.
 pub fn display_notes(notes: Option<Vec<NoteData>>) {
@@ -118,7 +119,8 @@ pub fn pages_view(pages: &Vec<NoteData>) {
 
     write!(stdout_raw, "{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
     display_note_raw(&pages[current_page], current_page, num_pages);
-    write!(stdout_raw, "{}", "l = next;  h = previous  q = quit".blue().bold()).unwrap();
+    //write!(stdout_raw, "{}", "l = next;  h = previous  q = quit".blue().bold()).unwrap();
+    show_options(&mut stdout_raw);
     stdout_raw.flush().unwrap();
     for c in stdin.keys() {
         //clearing the screen and going to top left corner
@@ -137,7 +139,8 @@ pub fn pages_view(pages: &Vec<NoteData>) {
                     current_page -= 1;
                     write!(stdout_raw, "{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
                     display_note_raw(&pages[current_page], current_page, num_pages);
-                    write!(stdout_raw, "{}", "l = next;  h = previous  q = quit".blue().bold()).unwrap();
+                    //write!(stdout_raw, "{}", "l = next;  h = previous  q = quit".blue().bold()).unwrap();
+                    show_options(&mut stdout_raw);
                 }
             }
             Key::Char('q') => {
@@ -155,6 +158,10 @@ pub fn pages_view(pages: &Vec<NoteData>) {
 
         stdout_raw.flush().unwrap();
     }
+}
+
+fn show_options(stdout_raw: &mut impl Write ){
+    write!(stdout_raw, "{}", "l = next;  h = previous  q = quit".blue().bold()).unwrap();
 }
 
 pub fn get_user_input(msg: &str) -> Result<String> {
