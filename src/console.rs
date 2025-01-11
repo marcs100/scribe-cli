@@ -55,8 +55,8 @@ pub fn display_note_raw(note: &NoteData, current_page: usize, num_pages: usize) 
         stdout,
         "{} From Notebook: {}  Page {} of {}\r\n",
         ">> ".green(),
-        current_page+1,
         note.notebook.green().bold(),
+        current_page+1,
         num_pages+1
     )
     .unwrap();
@@ -68,12 +68,13 @@ pub fn display_note_raw(note: &NoteData, current_page: usize, num_pages: usize) 
         &note.created[..16].green().bold(),
         &note.modified[..16].green().bold()
     ).unwrap();
-    write!(stdout, "{}", "-----------\r\n".cyan()).unwrap();
+    write!(stdout, "{}", "<-------------------->\r\n").unwrap();
     write!(stdout, "{}{}\n\r",
-        "| ".cyan(),
+        "| ",
         note.content.replace("\n", "\n\r| ").trim()
     ).unwrap();
-    write!(stdout, "{}", "---------->\n\r".cyan()).unwrap();
+    write!(stdout, "{}", "<------------------->\n\r"
+    ).unwrap();
     stdout.flush().unwrap();
 }
 
@@ -117,7 +118,7 @@ pub fn pages_view(pages: &Vec<NoteData>) {
 
     write!(stdout_raw, "{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
     display_note_raw(&pages[current_page], current_page, num_pages);
-    write!(stdout_raw, "{}", "l = next;  h = previous  q = quit").unwrap();
+    write!(stdout_raw, "{}", "l = next;  h = previous  q = quit".blue().bold()).unwrap();
     stdout_raw.flush().unwrap();
     for c in stdin.keys() {
         //clearing the screen and going to top left corner
@@ -128,7 +129,7 @@ pub fn pages_view(pages: &Vec<NoteData>) {
                     current_page += 1;
                     write!(stdout_raw, "{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
                     display_note_raw(&pages[current_page], current_page, num_pages);
-                    write!(stdout_raw, "{}", "l = next;  h = previous  q = quit").unwrap();
+                    write!(stdout_raw, "{}", "l = next;  h = previous  q = quit".blue().bold()).unwrap();
                 }
             }
             Key::Char('h') => {
@@ -136,7 +137,7 @@ pub fn pages_view(pages: &Vec<NoteData>) {
                     current_page -= 1;
                     write!(stdout_raw, "{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
                     display_note_raw(&pages[current_page], current_page, num_pages);
-                    write!(stdout_raw, "{}", "l = next;  h = previous  q = quit").unwrap();
+                    write!(stdout_raw, "{}", "l = next;  h = previous  q = quit".blue().bold()).unwrap();
                 }
             }
             Key::Char('q') => {
