@@ -186,3 +186,4 @@ pub fn get_notebook_names(conn: &Connection) -> Option<Vec<NotebookCoverData>>{
 
       Some(notebook_names)
 }
+

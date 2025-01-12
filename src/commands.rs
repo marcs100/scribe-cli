@@ -1,8 +1,7 @@
 use crate::config::ConfigFile;
 use crate::console::{self, display_error, display_notebook_names, display_notes, pages_view};
 use crate::scribe_database::{
-    get_notebook_names, get_pinned_notes, get_recent_notes, opendb, write_note, NoteData, Notebook,
-    NotebookCoverData,
+    get_notebook_names, get_pinned_notes, get_recent_notes, opendb, write_note, NoteData, Notebook
 };
 use chrono::Local;
 use std::string::String;

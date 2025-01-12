@@ -9,7 +9,6 @@ use termion::cursor;
 use termion::event::Key;
 use termion::input::TermRead;
 use termion::raw::IntoRawMode;
-use termion::raw::RawTerminal;
 
 //function to display the notes vector to screen.
 pub fn display_notes(notes: Option<Vec<NoteData>>) {
