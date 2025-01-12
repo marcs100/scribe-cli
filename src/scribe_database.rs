@@ -2,7 +2,7 @@
 use rusqlite::{Connection, Result, Statement};
 //use rusqlite::NO_PARAMS;
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct NoteData {
       pub id: i32,
       pub notebook: String,

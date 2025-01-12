@@ -78,36 +78,10 @@ pub fn display_note_raw(note: &NoteData, current_page: usize, num_pages: usize) 
     stdout.flush().unwrap();
 }
 
-//functiom to display a single note to screen
-/*pub fn display_note(note: &NoteData) {
-    let mut pinned_status = String::new();
-    match note.pinned {
-        0 => {
-            pinned_status.push_str("No");
-        }
-        1 => {
-            pinned_status.push_str("Yes");
-        }
-        _ => {
-            panic!("Invalid pinned status!");
-        }
-    }
-    //println!("{}", "<----------".cyan());
-    println!("{} From Notebook: {}",">> ".green(),
-             note.notebook.green().bold());
-    println!(
-        "| Pinned: {}  Created: {}  Modified: {}",
-        pinned_status.green().bold(),
-        &note.created[..16].green().bold(),
-        &note.modified[..16].green().bold()
-    );
-    println!("{}", "-----------".cyan());
-    println!("{}", note.content.trim());
-    println!("{}", "---------->".cyan());
-}*/
-
+//-------------------------------------------------------------------
 //function to show notebook book pages one page at a time
-//User can navogate with keyboard
+//-------------------------------------------------------------------
+//User can navigate with keyboard
 pub fn pages_view(pages: &Vec<NoteData>) {
     let num_pages = pages.len() - 1;
     let mut current_page = 0; //using zero index for pages

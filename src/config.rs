@@ -6,7 +6,7 @@ use homedir::my_home;
 use std::string::String;
 
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct ConfigFile{
     pub database_file: String,
     pub default_notebook: String,

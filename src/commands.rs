@@ -1,12 +1,12 @@
 use crate::config::ConfigFile;
-use crate::console::{self, display_error, display_notebook_names, display_notes, pages_view};
+use crate::console::{self, display_error, display_notebook_names, display_note_raw, pages_view};
 use crate::scribe_database::{
     get_notebook_names, get_pinned_notes, get_recent_notes, opendb, write_note, NoteData, Notebook
 };
 use chrono::Local;
 use std::string::String;
 
-pub fn notebook_cmd(value: &str, conf: ConfigFile) {
+pub fn notebook_cmd(value: &str, conf: &ConfigFile) {
     let conn = opendb(conf.database_file.as_str());
     let mut nb = Notebook::default();
 
@@ -20,7 +20,7 @@ pub fn notebook_cmd(value: &str, conf: ConfigFile) {
     pages_view(&pages);
 }
 
-pub fn recent_notes_cmd(option: &str, value: &str, conf: ConfigFile) {
+pub fn recent_notes_cmd(option: &str, value: &str, conf: &ConfigFile) {
     // ************* debug only *****************************
     //let mut s1: String = String::new();
     //s1.push_str(conf.database_file.as_str());
@@ -56,11 +56,11 @@ pub fn recent_notes_cmd(option: &str, value: &str, conf: ConfigFile) {
 }
 
 //writes one line of user input to the defualt note book
-pub fn quick_note_cmd(option: &str, value: &str, conf: ConfigFile) {
-    let notebook: String = conf.default_notebook;
+pub fn quick_note_cmd(option: &str, value: &str, conf: &ConfigFile) {
+    let notebook: String = conf.default_notebook.clone();
     let note_content = String::from(value);
     let tag = String::from("None"); // this field is not used any more!
-    let bg = conf.default_note_background;
+    let bg = conf.default_note_background.clone();
     let conn = opendb(conf.database_file.as_str());
 
     let mut pin = 0;
@@ -95,13 +95,22 @@ pub fn quick_note_cmd(option: &str, value: &str, conf: ConfigFile) {
     write_note(&conn, note_details).expect("quick_note_cmd: error writing note!");
 
     //Now lets show the note we have just created
-    let notes = get_recent_notes(&conn, 1);
-    display_notes(notes);
+    let mut nb: Notebook = Notebook::default();
+    nb.get(&conn, &conf.default_notebook.as_str());
+    match nb.pages {
+        Some(pages) => {
+            let num_pages = pages.len();
+            let current_page = pages.len();
+            let page: &NoteData = &pages.clone()[num_pages-1];
+            display_note_raw(&page,current_page ,num_pages);
+        }
+        None => {}
+    }
 
     conn.close().expect("error closing db connection!");
 }
 
-pub fn pinned_notes_cmd(option: &str, value: &str, conf: ConfigFile) {
+pub fn pinned_notes_cmd(option: &str, value: &str, conf: &ConfigFile) {
     if option.len() > 0 {
         //panic!("No options currently supported for this command!");
         display_error("No options currently supported for this command");
@@ -123,7 +132,7 @@ pub fn pinned_notes_cmd(option: &str, value: &str, conf: ConfigFile) {
     }
 }
 
-pub fn list_cmd(option: &str, value: &str, conf: ConfigFile) {
+pub fn list_cmd(option: &str, value: &str, conf: &ConfigFile) {
     if option.len() > 0 {
         //panic!("No options currently supported for this command!");
         display_error("No options currently supported for this command");
@@ -164,16 +173,7 @@ pub fn list_cmd(option: &str, value: &str, conf: ConfigFile) {
                             let notebook_name =
                                 notebook_names[notebook_number - 1].notebook.as_str(); //populate selected notebook name
 
-                            let mut nb = Notebook::default();
-
-                            nb.get(&conn, notebook_name); //populate notebook struucture
-                            if nb.pages.is_none() {
-                                display_error("Notebook not found");
-                                return;
-                            }
-
-                            let pages = &nb.pages.expect("error processing notebook pages");
-                            pages_view(&pages);
+                            notebook_cmd(notebook_name, conf);
                         }
                     }
                 }

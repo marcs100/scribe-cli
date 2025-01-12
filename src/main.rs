@@ -74,19 +74,19 @@ fn main() {
 
     match command.as_str() {
         "recent" => {
-            recent_notes_cmd(&user_option, &user_value, conf);
+            recent_notes_cmd(&user_option, &user_value, &conf);
         }
         "note" => {
-            quick_note_cmd(&user_option, &user_value, conf);
+            quick_note_cmd(&user_option, &user_value, &conf);
         }
         "pinned" => {
-            pinned_notes_cmd(&user_option, &user_value, conf);
+            pinned_notes_cmd(&user_option, &user_value, &conf);
         }
         "notebook" => {
-            notebook_cmd(&user_value, conf);
+            notebook_cmd(&user_value, &conf);
         }
         "list" => {
-            list_cmd(&user_value, &user_value, conf);
+            list_cmd(&user_value, &user_value, &conf);
         }
         _ => {
             display_warning("No command matched!");
