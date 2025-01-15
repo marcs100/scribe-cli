@@ -104,7 +104,7 @@ pub fn pages_view(pages: &Vec<NoteData>) {
                     current_page += 1;
                     write!(stdout_raw, "{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
                     display_note_raw(&pages[current_page], current_page, num_pages);
-                    write!(stdout_raw, "{}", "l = next;  h = previous  q = quit".blue().bold()).unwrap();
+                    show_options(&mut stdout_raw);
                 }
             }
             Key::Char('h') => {
@@ -112,7 +112,6 @@ pub fn pages_view(pages: &Vec<NoteData>) {
                     current_page -= 1;
                     write!(stdout_raw, "{}{}", clear::All, cursor::Goto(1, 1)).unwrap();
                     display_note_raw(&pages[current_page], current_page, num_pages);
-                    //write!(stdout_raw, "{}", "l = next;  h = previous  q = quit".blue().bold()).unwrap();
                     show_options(&mut stdout_raw);
                 }
             }
