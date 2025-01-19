@@ -1,5 +1,5 @@
 use crate::config::ConfigFile;
-use crate::console::{self, display_error, display_notebook_names, display_note_raw, pages_view};
+use crate::console::{self, display_error, display_notebook_names, display_note_raw, pages_view, display_notes};
 use crate::scribe_database::{
     get_notebook_names, get_pinned_notes, get_recent_notes, opendb, write_note, NoteData, Notebook
 };
@@ -30,17 +30,27 @@ pub fn recent_notes_cmd(option: &str, value: &str, conf: &ConfigFile) {
     let conn = opendb(conf.database_file.as_str());
     let mut num_notes = conf.recent_notes_count;
 
-    match option {
-        "--count" | "-c" => {
-            if value.len() > 0 {
-                num_notes = value.parse().expect("invalid option given");
-            } else {
-                display_error("expecting a value for count!");
+    if option.len() > 0{
+        match option {
+            "--count" | "-c" => {
+                if value.len() > 0 {
+                    num_notes = value.parse().expect("invalid option given");
+                } else {
+                    display_error("expecting a value for count!");
+                    return;
+                }
+            }
+            _ => {
+                display_error("Invalid option found!");
                 return;
             }
         }
-        _ => {
-            conf.recent_notes_count;
+    }
+    else{
+        if value.len() > 0 {
+            //We can't have a value when no option has been supplied
+            display_error("No value allowed for rhis command!");
+            return;
         }
     }
 
@@ -111,15 +121,22 @@ pub fn quick_note_cmd(option: &str, value: &str, conf: &ConfigFile) {
 }
 
 pub fn pinned_notes_cmd(option: &str, value: &str, conf: &ConfigFile) {
-    if option.len() > 0 {
-        //panic!("No options currently supported for this command!");
-        display_error("No options currently supported for this command");
+
+    let mut display_as_list = false;
+
+    if value.len() > 0 {
+        //panic!("No value allowed for this command!")
+        display_error("No value allowed for this command");
         return;
     }
 
-    if value.len() > 0 {
-        display_error("No value allowed for this command!");
-        return;
+    if option.len() > 0 {
+        match option {
+            "--list" | "-l" => {
+                display_as_list = true;
+            }
+            _ => {display_error("Invalid option found!")}
+        }
     }
 
     let conn = opendb(conf.database_file.as_str());
@@ -127,7 +144,14 @@ pub fn pinned_notes_cmd(option: &str, value: &str, conf: &ConfigFile) {
     //display_notes(notes);
 
     match notes {
-        Some(pages) => pages_view(&pages),
+        Some(pages) =>{
+            if display_as_list {
+                display_notes(&pages);
+            }
+            else {
+                pages_view(&pages)
+            }
+        }
         None => (),
     }
 }

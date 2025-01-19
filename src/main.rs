@@ -24,8 +24,8 @@ fn main() {
     let arg1 = std::env::args().nth(2);
     let arg2 = std::env::args().nth(3);
     let mut conf = config::ConfigFile::default();
-    let valid_short_options = ['c', 'p']; //room to add more in future!!!!!!!!
-    let valid_long_options = ["--count", "--pin"]; //room for more in future!!!
+    let valid_short_options = ['c', 'p', 'l']; //room to add more in future!!!!!!!!
+    let valid_long_options = ["--count", "--pin", "--list"]; //room for more in future!!!
 
     //env::set_var("RUST_BACKTRACE", "1"); //this should only be in the dubug version
 

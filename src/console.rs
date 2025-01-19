@@ -11,17 +11,12 @@ use termion::input::TermRead;
 use termion::raw::IntoRawMode;
 
 //function to display the notes vector to screen.
-pub fn display_notes(notes: Option<Vec<NoteData>>) {
-    match notes {
-        Some(note_data) => {
-            for note in note_data.iter() {
-                display_note_raw(note,0,0);
-            }
-        }
-        None => {
-            println!("No recent notes returned");
-        }
+pub fn display_notes(notes: &Vec<NoteData>) {
+
+    for note in notes.iter() {
+        display_note_raw(note,0,0);
     }
+
 }
 
 //functiom to display a single note to screen in raw tty mode
@@ -172,7 +167,7 @@ pub fn display_help() {
     println!("    note <content> - Write a quick note (incase note in quotes)");
     println!("         option : [--pin -p] pin the note");
     println!("    pinned - Display all pinned notes");
-    println!("         option : <None>");
+    println!("         option : [--list -l Display all pinned notes at once" );
     println!("    notebook <notebook name> - Display an entire notbbook");
     println!("         option : <None>");
     println!("    list - Displays a list of available notebook names");
