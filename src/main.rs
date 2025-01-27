@@ -9,7 +9,7 @@ use crate::commands::{list_cmd, notebook_cmd, pinned_notes_cmd, quick_note_cmd, 
 
 //use std::env;  //currently only being used for rust baccktrace
 
-static VERSION: &str = "0.003 dev";
+static VERSION: &str = "0.1.1";
 
 fn main() {
     let command = std::env::args().nth(1).expect("no command given");
