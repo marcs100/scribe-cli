@@ -1,8 +1,7 @@
 use crate::scribe_database::{NoteData, NotebookCoverData};
 use colored::Colorize;
 use std::io;
-use std::io::*;
-use std::io::{stdin, stdout, Write};
+use std::io::{stdin, stdout, Result, Write};
 use std::string::String;
 use termion::clear;
 use termion::cursor;
@@ -12,11 +11,9 @@ use termion::raw::IntoRawMode;
 
 //function to display the notes vector to screen.
 pub fn display_notes(notes: &Vec<NoteData>) {
-
     for note in notes.iter() {
-        display_note_raw(note,0,0);
+        display_note_raw(note, 0, 0);
     }
-
 }
 
 //functiom to display a single note to screen in raw tty mode
@@ -51,8 +48,8 @@ pub fn display_note_raw(note: &NoteData, current_page: usize, num_pages: usize) 
         "{} From Notebook: {}  Page {} of {}\r\n",
         ">> ".green(),
         note.notebook.green().bold(),
-        current_page+1,
-        num_pages+1
+        current_page + 1,
+        num_pages + 1
     )
     .unwrap();
     write!(
@@ -62,14 +59,17 @@ pub fn display_note_raw(note: &NoteData, current_page: usize, num_pages: usize) 
         pinned_status.green().bold(),
         &note.created[..16].green().bold(),
         &note.modified[..16].green().bold()
-    ).unwrap();
+    )
+    .unwrap();
     write!(stdout, "{}", "<-------------------->\r\n").unwrap();
-    write!(stdout, "{}{}\n\r",
+    write!(
+        stdout,
+        "{}{}\n\r",
         "| ",
         note.content.replace("\n", "\n\r| ").trim()
-    ).unwrap();
-    write!(stdout, "{}", "<------------------->\n\r"
-    ).unwrap();
+    )
+    .unwrap();
+    write!(stdout, "{}", "<------------------->\n\r").unwrap();
     stdout.flush().unwrap();
 }
 
@@ -127,8 +127,13 @@ pub fn pages_view(pages: &Vec<NoteData>) {
     }
 }
 
-fn show_options(stdout_raw: &mut impl Write ){
-    write!(stdout_raw, "{}", "l = next;  h = previous  q = quit".blue().bold()).unwrap();
+fn show_options(stdout_raw: &mut impl Write) {
+    write!(
+        stdout_raw,
+        "{}",
+        "l = next;  h = previous  q = quit".blue().bold()
+    )
+    .unwrap();
 }
 
 pub fn get_user_input(msg: &str) -> Result<String> {
@@ -167,7 +172,7 @@ pub fn display_help() {
     println!("    note <content> - Write a quick note (incase note in quotes)");
     println!("         option : [--pin -p] pin the note");
     println!("    pinned - Display all pinned notes");
-    println!("         option : [--list -l Display all pinned notes at once" );
+    println!("         option : [--list -l Display all pinned notes at once");
     println!("    notebook <notebook name> - Display an entire notbbook");
     println!("         option : <None>");
     println!("    list - Displays a list of available notebook names");
