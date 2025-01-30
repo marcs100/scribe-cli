@@ -35,7 +35,8 @@ pub fn recent_notes_cmd(option: &str, value: &str, conf: &ConfigFile) {
             "--count" | "-c" => {
                 if value.len() > 0 {
                     num_notes = value.parse().expect("invalid option given");
-                } else {
+                }
+                else {
                     display_error("expecting a value for count!");
                     return;
                 }
