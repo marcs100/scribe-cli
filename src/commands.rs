@@ -184,16 +184,19 @@ pub fn list_cmd(option: &str, value: &str, conf: &ConfigFile) {
                     if input_val.len() == 0 {
                         println!("quitting");
                         return;
-                    }else {
+                    }
+                    else {
                         //do we have a number?
                         let notebook_number = input_val.parse().unwrap_or_else(|_| 0);
                         if notebook_number == 0 {
                             display_error("non-numeric value entered");
                             return;
-                        } else if notebook_number > notebook_names.len() {
+                        }
+                        else if notebook_number > notebook_names.len() {
                             display_error("notebook number is out of range");
                             return;
-                        } else {
+                        }
+                        else {
                             let notebook_name =
                                 notebook_names[notebook_number - 1].notebook.as_str(); //populate selected notebook name
 
