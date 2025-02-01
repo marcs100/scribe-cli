@@ -178,3 +178,7 @@ pub fn display_help() {
     println!("    list - Displays a list of available notebook names");
     println!("         option : <None>");
 }
+
+pub fn display_version(version: &str){
+    println!("{} {}", "scribe-cli:",version.bold());
+}

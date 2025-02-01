@@ -3,13 +3,13 @@ mod config;
 mod console;
 mod scribe_database;
 
-use console::{display_error, display_help, display_warning};
+use console::{display_error, display_help, display_warning, display_version};
 
 use crate::commands::{list_cmd, notebook_cmd, pinned_notes_cmd, quick_note_cmd, recent_notes_cmd};
 
 //use std::env;  //currently only being used for rust baccktrace
 
-static VERSION: &str = "0.1.1";
+static VERSION: &str = "0.1.2";
 
 fn main() {
     let command = std::env::args().nth(1).expect("no command given");
@@ -25,11 +25,7 @@ fn main() {
     let arg2 = std::env::args().nth(3);
     let mut conf = config::ConfigFile::default();
     let valid_short_options = ['c', 'p', 'l']; //room to add more in future!!!!!!!!
-    let valid_long_options = ["--count", "--pin", "--list"]; //room for more in future!!!
-
-    //env::set_var("RUST_BACKTRACE", "1"); //this should only be in the dubug version
-
-    println!("---------- Scribe cli {} -------------", VERSION);
+    let valid_long_options = ["--count", "--pin", "--list", "--version"]; //room for more in future!!!
 
     let mut user_option: String = String::new();
     let mut user_value: String = String::new();
@@ -41,6 +37,15 @@ fn main() {
         return;
     }
 
+    if command == "--version"{
+        display_version(VERSION);
+        return;
+    }
+
+    /*
+     Note: we are only checking here if supported options have been seelcted. We are not checking
+     if options have been used correctly for each command, that will be verified later in command.rs
+    */
     match arg1 {
         //if arg1 is not an 'option' then it will be considered a value
         Some(s) => {
